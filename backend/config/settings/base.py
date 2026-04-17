@@ -97,9 +97,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-# ---------------------------------------------------------------------------
-# Database (MySQL placeholders — configure in .env)
-# ---------------------------------------------------------------------------
 
 DATABASES = {
     "default": {
@@ -116,9 +113,6 @@ DATABASES = {
     }
 }
 
-# ---------------------------------------------------------------------------
-# Custom user model (Phase 2)
-# ---------------------------------------------------------------------------
 
 AUTH_USER_MODEL = "users.User"
 

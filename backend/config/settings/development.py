@@ -9,6 +9,8 @@ from .base import *  # noqa: F403, F405
 
 DEBUG = True
 
+ALLOWED_HOSTS = [*ALLOWED_HOSTS, "testserver"]  # noqa: F405
+
 USE_MYSQL = os.getenv("USE_MYSQL", "False").lower() == "true"
 
 if not USE_MYSQL:

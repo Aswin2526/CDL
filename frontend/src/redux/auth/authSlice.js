@@ -2,10 +2,18 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as authService from '../../services/authService'
 import { ROUTES, STORAGE_KEYS } from '../../utils/constants'
 
-const savedUser = localStorage.getItem(STORAGE_KEYS.USER)
+function loadStoredUser() {
+  try {
+    const savedUser = localStorage.getItem(STORAGE_KEYS.USER)
+    return savedUser ? JSON.parse(savedUser) : null
+  } catch {
+    localStorage.removeItem(STORAGE_KEYS.USER)
+    return null
+  }
+}
 
 const initialState = {
-  user: savedUser ? JSON.parse(savedUser) : null,
+  user: loadStoredUser(),
   accessToken: localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN),
   refreshToken: localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
   loading: false,
@@ -68,6 +76,24 @@ export const logout = createAsyncThunk('auth/logout', async (_, { getState }) =>
   clearAuthStorage()
 })
 
+/** Restore session from stored JWT by loading the current profile. */
+export const initializeAuth = createAsyncThunk(
+  'auth/initialize',
+  async (_, { getState }) => {
+    const { accessToken } = getState().auth
+    if (!accessToken) {
+      return null
+    }
+    try {
+      const { data } = await authService.fetchProfile()
+      return data
+    } catch {
+      clearAuthStorage()
+      throw new Error('Session expired')
+    }
+  },
+)
+
 const getDashboardRoute = (role) => {
   if (role === 'admin') return ROUTES.ADMIN_DASHBOARD
   return ROUTES.CUSTOMER_HOME
@@ -122,6 +148,20 @@ const authSlice = createSlice({
         state.refreshToken = null
         state.loading = false
         state.error = null
+      })
+      .addCase(initializeAuth.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.user = action.payload
+          persistAuth(action.payload, {
+            access: state.accessToken,
+            refresh: state.refreshToken,
+          })
+        }
+      })
+      .addCase(initializeAuth.rejected, (state) => {
+        state.user = null
+        state.accessToken = null
+        state.refreshToken = null
       })
   },
 })

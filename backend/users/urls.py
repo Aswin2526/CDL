@@ -1,5 +1,5 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView # pyright: ignore[reportMissingImports]
 
 from users.views import (
     LoginView,

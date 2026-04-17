@@ -1,17 +1,28 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import { RouterProvider } from 'react-router-dom'
+import { Provider, useDispatch } from 'react-redux'
 import './index.css'
-import App from './App.jsx'
+import { router } from './routes/router.jsx'
 import { store } from './redux/store/index.js'
+import { initializeAuth } from './redux/auth/authSlice'
+
+function AuthBootstrap({ children }) {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initializeAuth())
+  }, [dispatch])
+
+  return children
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AuthBootstrap>
+        <RouterProvider router={router} />
+      </AuthBootstrap>
     </Provider>
   </StrictMode>,
 )

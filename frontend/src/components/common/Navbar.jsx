@@ -23,14 +23,37 @@ function Navbar() {
             <Link to="/" className="text-xl font-bold text-amber-700">
               {APP_NAME}
             </Link>
-            <ul className="flex items-center gap-4 text-sm font-medium text-gray-600 md:hidden">
+            <ul className="flex items-center gap-3 text-sm font-medium text-gray-600 md:hidden">
               <li>
                 <Link to={ROUTES.SHOP}>Gallery</Link>
               </li>
-              {isAuthenticated && (
-                <li>
-                  <Link to={ROUTES.WISHLIST}>♥</Link>
-                </li>
+              {isAuthenticated ? (
+                <>
+                  <li>
+                    <Link to={ROUTES.WISHLIST}>♥</Link>
+                  </li>
+                  {user?.role === 'customer' && (
+                    <li>
+                      <Link to={ROUTES.CUSTOMER_HOME}>Account</Link>
+                    </li>
+                  )}
+                  <li>
+                    <button type="button" onClick={handleLogout} className="text-amber-700">
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to={ROUTES.LOGIN}>Login</Link>
+                  </li>
+                  <li>
+                    <Link to={ROUTES.REGISTER} className="text-amber-700">
+                      Register
+                    </Link>
+                  </li>
+                </>
               )}
             </ul>
           </div>
@@ -61,6 +84,13 @@ function Navbar() {
                   <li>
                     <Link to={ROUTES.ADMIN_DASHBOARD} className="hover:text-amber-700">
                       Admin
+                    </Link>
+                  </li>
+                )}
+                {user?.role === 'customer' && (
+                  <li>
+                    <Link to={ROUTES.CUSTOMER_HOME} className="hover:text-amber-700">
+                      My account
                     </Link>
                   </li>
                 )}

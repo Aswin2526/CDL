@@ -16,7 +16,7 @@ admin.site.index_title = "Dashboard"
 urlpatterns = [
     path("", root, name="root"),
     path("admin/", admin.site.urls),
-    # API routes (Phase 2+)
+    # API routes 
     path("api/users/", include("users.urls")),
     path("api/customers/", include("customers.urls")),
     path("api/products/", include("products.urls")),

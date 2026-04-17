@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   clearError,
   getDashboardRoute,
-  register,
+  register as registerAccount,
   selectAuth,
   selectIsAuthenticated,
 } from '../../redux/auth/authSlice'
@@ -40,15 +40,15 @@ function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const result = await dispatch(register(form))
-    if (register.fulfilled.match(result)) {
+    const result = await dispatch(registerAccount(form))
+    if (registerAccount.fulfilled.match(result)) {
       navigate(getDashboardRoute(result.payload.user.role), { replace: true })
     }
   }
 
   const errorMessage =
     error?.detail ||
-    (typeof error === 'object'
+    (error && typeof error === 'object'
       ? Object.entries(error)
           .map(([k, v]) => `${k}: ${Array.isArray(v) ? v[0] : v}`)
           .join(' ')

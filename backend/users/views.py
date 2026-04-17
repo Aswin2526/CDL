@@ -44,17 +44,20 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(TokenObtainPairView):
     """POST /api/users/login/ — obtain JWT access and refresh tokens."""
 
+    permission_classes = [AllowAny]
+    authentication_classes = []
     serializer_class = EmailTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
-            email = (
-                request.data.get("email")
-                or request.data.get("username")
-                or ""
-            ).lower()
-            user = User.objects.get(email=email)
+        if response.status_code != 200:
+            return response
+
+        email = (
+            request.data.get("email") or request.data.get("username") or ""
+        ).strip().lower()
+        user = User.objects.filter(email__iexact=email).first()
+        if user:
             response.data["user"] = UserSerializer(
                 user, context={"request": request}
             ).data

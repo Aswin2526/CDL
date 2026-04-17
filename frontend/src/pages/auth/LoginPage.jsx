@@ -43,7 +43,9 @@ function LoginPage() {
   const errorMessage =
     error?.detail ||
     error?.non_field_errors?.[0] ||
-    (typeof error === 'object' ? Object.values(error).flat()[0] : null)
+    (error && typeof error === 'object'
+      ? Object.values(error).flat()[0]
+      : null)
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12">
