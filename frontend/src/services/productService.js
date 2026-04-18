@@ -1,3 +1,4 @@
+
 import api from './api'
 
 export const fetchProducts = (params = {}) => api.get('/products/', { params })

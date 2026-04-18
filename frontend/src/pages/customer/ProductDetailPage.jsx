@@ -154,7 +154,7 @@ function ProductDetailPage() {
           <p
             className={`mt-4 inline-block rounded-full px-3 py-1 text-sm font-medium ${
               detail.in_stock
-                ? 'bg-amber-100 text-amber-900'
+                ? 'bg-amber-50 text-amber-900'
                 : 'bg-red-100 text-red-800'
             }`}
           >
@@ -241,10 +241,10 @@ function ProductDetailPage() {
               onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
             />
-            {reviewMsg && <p className="mt-2 text-sm text-amber-800">{reviewMsg}</p>}
+            {reviewMsg && <p className="mt-2 text-sm text-amber-700">{reviewMsg}</p>}
             <button
               type="submit"
-              className="mt-3 rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+              className="mt-3 rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
             >
               Submit review
             </button>

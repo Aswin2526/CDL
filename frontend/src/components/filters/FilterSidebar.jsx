@@ -85,7 +85,7 @@ function FilterSidebar({ categories, filters, onChange, onApply, onReset }) {
         <button
           type="button"
           onClick={onApply}
-          className="w-full rounded-lg bg-amber-700 py-2.5 text-sm font-medium text-white hover:bg-amber-800"
+          className="w-full rounded-lg bg-amber-700 py-2.5 text-sm font-medium text-white hover:bg-amber-700"
         >
           Apply filters
         </button>
