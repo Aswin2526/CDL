@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from products.catalog_images import external_image_url_for_product
 from products.models import Category, Product, ProductImage, StoreSettings
 
 
@@ -71,9 +72,9 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     def get_primary_image(self, obj):
         image = obj.images.filter(is_primary=True).first() or obj.images.first()
-        if image:
+        if image and image.image:
             return build_absolute_media_url(self.context.get("request"), image.image)
-        return None
+        return external_image_url_for_product(obj)
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -119,3 +120,17 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
         reviews = obj.reviews.select_related("user")[:10]
         return ReviewSerializer(reviews, many=True, context=self.context).data
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if not data.get("images"):
+            data["images"] = [
+                {
+                    "id": None,
+                    "image": external_image_url_for_product(instance),
+                    "alt_text": instance.name,
+                    "is_primary": True,
+                    "sort_order": 0,
+                }
+            ]
+        return data

@@ -31,6 +31,7 @@ export const MEDIUM_OPTIONS = [
   { value: 'acrylic', label: 'Acrylic' },
   { value: 'watercolor', label: 'Watercolor' },
   { value: 'mixed', label: 'Mixed Media' },
+  { value: 'pencil', label: 'Pencil / Graphite' },
   { value: 'digital', label: 'Digital Print' },
   { value: 'other', label: 'Other' },
 ]
@@ -41,6 +42,8 @@ export const CATEGORY_ICONS = {
   abstract: '🎨',
   'still-life': '🌸',
   contemporary: '✨',
+  'color-paintings': '🖌️',
+  'pencil-paintings': '✏️',
 }
 
 export const PLACEHOLDER_IMAGE =

@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
+from products.catalog_images import attach_images_for_all_products
 from products.models import Category, PaintingMedium, Product, StoreSettings
 
 
@@ -21,8 +22,29 @@ class Command(BaseCommand):
             action="store_true",
             help="Delete existing products and categories before seeding",
         )
+        parser.add_argument(
+            "--skip-images",
+            action="store_true",
+            help="Do not download artwork images for products",
+        )
+        parser.add_argument(
+            "--images-only",
+            action="store_true",
+            help="Only attach images to existing products (skip catalog seed)",
+        )
 
     def handle(self, *args, **options):
+        if options["images_only"]:
+            self.stdout.write("Attaching images to all products...")
+            ok, failed = attach_images_for_all_products(
+                stdout=self.stdout,
+                style=self.style,
+            )
+            self.stdout.write(
+                self.style.SUCCESS(f"Images attached: {ok} ok, {failed} failed.")
+            )
+            return
+
         store = StoreSettings.load()
         store.name = "ChitraBazar"
         store.tagline = "Online painting gallery & store"
@@ -47,6 +69,14 @@ class Command(BaseCommand):
             ("Abstract", "Modern and expressive compositions"),
             ("Still Life", "Objects, florals, and interiors"),
             ("Contemporary", "Bold current-era original works"),
+            (
+                "Color Paintings",
+                "Original full-color works in oil, acrylic, and watercolor",
+            ),
+            (
+                "Pencil Paintings",
+                "Detailed graphite, charcoal, and pencil drawings on paper",
+            ),
         ]
         categories = {}
         for name, desc in categories_data:
@@ -226,6 +256,176 @@ class Command(BaseCommand):
                 True,
                 2024,
             ),
+            # —— Color Paintings ——
+            (
+                "Rhododendron Valley — Full Color",
+                "Color Paintings",
+                "24800.00",
+                1,
+                True,
+                4.8,
+                14,
+                "Maya Thapa",
+                PaintingMedium.WATERCOLOR,
+                "22 × 30 in",
+                True,
+                2024,
+            ),
+            (
+                "Festival of Lights — Acrylic",
+                "Color Paintings",
+                "31500.00",
+                1,
+                True,
+                4.7,
+                11,
+                "Anil Karki",
+                PaintingMedium.ACRYLIC,
+                "30 × 40 in",
+                False,
+                2023,
+            ),
+            (
+                "Lakeside Sunset in Color",
+                "Color Paintings",
+                "36200.00",
+                1,
+                True,
+                4.9,
+                19,
+                "Maya Thapa",
+                PaintingMedium.OIL,
+                "36 × 48 in",
+                True,
+                2024,
+            ),
+            (
+                "Terai Golden Fields",
+                "Color Paintings",
+                "18900.00",
+                1,
+                False,
+                4.5,
+                8,
+                "Rajan Gurung",
+                PaintingMedium.ACRYLIC,
+                "24 × 32 in",
+                True,
+                2022,
+            ),
+            (
+                "Monsoon Rainbow Over Pokhara",
+                "Color Paintings",
+                "27400.00",
+                1,
+                False,
+                4.6,
+                10,
+                "Maya Thapa",
+                PaintingMedium.WATERCOLOR,
+                "20 × 28 in",
+                False,
+                2023,
+            ),
+            (
+                "Village Courtyard — Oil on Canvas",
+                "Color Paintings",
+                "29800.00",
+                1,
+                False,
+                4.4,
+                7,
+                "Sunita Rai",
+                PaintingMedium.OIL,
+                "28 × 36 in",
+                True,
+                2021,
+            ),
+            # —— Pencil Paintings ——
+            (
+                "Old Man of Pokhara — Graphite Portrait",
+                "Pencil Paintings",
+                "14500.00",
+                1,
+                True,
+                4.8,
+                16,
+                "Sunita Rai",
+                PaintingMedium.PENCIL,
+                "16 × 20 in",
+                True,
+                2024,
+            ),
+            (
+                "Temple Courtyard — Pencil Study",
+                "Pencil Paintings",
+                "11800.00",
+                1,
+                True,
+                4.7,
+                12,
+                "Sunita Rai",
+                PaintingMedium.PENCIL,
+                "14 × 18 in",
+                False,
+                2023,
+            ),
+            (
+                "Himalayan Macaque — Pencil Sketch",
+                "Pencil Paintings",
+                "9800.00",
+                1,
+                False,
+                4.5,
+                9,
+                "Rajan Gurung",
+                PaintingMedium.PENCIL,
+                "12 × 16 in",
+                False,
+                2022,
+            ),
+            (
+                "Mustang Alley — Charcoal & Pencil",
+                "Pencil Paintings",
+                "16200.00",
+                1,
+                False,
+                4.6,
+                11,
+                "Anil Karki",
+                PaintingMedium.PENCIL,
+                "18 × 24 in",
+                True,
+                2023,
+            ),
+            (
+                "Florals in Graphite",
+                "Pencil Paintings",
+                "11200.00",
+                1,
+                False,
+                4.4,
+                6,
+                "Maya Thapa",
+                PaintingMedium.PENCIL,
+                "11 × 14 in",
+                False,
+                2021,
+            ),
+            (
+                "Annapurna Ridge — Tonal Pencil",
+                "Pencil Paintings",
+                "17500.00",
+                1,
+                True,
+                4.9,
+                20,
+                "Rajan Gurung",
+                PaintingMedium.PENCIL,
+                "20 × 26 in",
+                True,
+                2024,
+            ),
         ]
 
         for row in paintings_data:
@@ -254,7 +454,7 @@ class Command(BaseCommand):
                     "is_framed": framed,
                     "year_created": year,
                     "description": (
-                        f"{name} by {artist}. Original {medium} work on canvas, "
+                        f"{name} by {artist}. Original {medium} artwork, "
                         f"{dimensions}. Sold exclusively by {store.name}. "
                         "Certificate of authenticity included. Insured shipping worldwide."
                     ),
@@ -270,5 +470,15 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"  + {product.name}"))
             else:
                 self.stdout.write(f"  ~ {product.name} (updated)")
+
+        if not options["skip_images"]:
+            self.stdout.write("Downloading artwork images for all products...")
+            ok, failed = attach_images_for_all_products(
+                stdout=self.stdout,
+                style=self.style,
+            )
+            self.stdout.write(
+                self.style.SUCCESS(f"Images: {ok} attached, {failed} failed.")
+            )
 
         self.stdout.write(self.style.SUCCESS("ChitraBazar catalog seed complete."))

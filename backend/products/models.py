@@ -55,6 +55,7 @@ class PaintingMedium(models.TextChoices):
     ACRYLIC = "acrylic", "Acrylic"
     WATERCOLOR = "watercolor", "Watercolor"
     MIXED = "mixed", "Mixed Media"
+    PENCIL = "pencil", "Pencil / Graphite"
     DIGITAL = "digital", "Digital Print"
     OTHER = "other", "Other"
 
