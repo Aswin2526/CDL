@@ -1,43 +1,50 @@
 """
-Artwork image URLs and helpers for catalog seeding / API fallbacks.
-Uses Picsum Photos (deterministic per product slug) for gallery thumbnails.
+Artwork images for catalog seeding and API fallbacks.
+Prefers bundled painting files in backend/seed_images/ (real artworks).
 """
 
 import hashlib
-import urllib.error
-import urllib.request
+from pathlib import Path
 
 from django.core.files.base import ContentFile
 
-# Curated Picsum IDs — paintings, galleries, sketches (stable direct URLs)
-COLOR_PICSUM_IDS = [
-    29,  # art / paint
-    37,  # abstract
-    64,  # creative
-    96,  # texture
-    111,  # color
-    119,  # structure
-    146,  # nature color
-    152,  # warm tones
-    175,  # soft
-    180,  # vivid
-    213,  # landscape
-    225,  # detail
-    287,  # pattern
-    338,  # gallery feel
-    367,  # mood
+# backend/seed_images/ — four reference paintings supplied for ChitraBazar
+SEED_IMAGES_DIR = Path(__file__).resolve().parent.parent / "seed_images"
+
+LOCAL_PAINTINGS = [
+    "nayan-nilo-ankha.png",
+    "ghar-bagaicha-landscape.png",
+    "charcoal-gaon-bato.png",
+    "fashion-portrait-black-white.png",
 ]
 
-PENCIL_PICSUM_IDS = [
-    24,  # monochrome feel
-    48,  # texture
-    52,  # minimal
-    60,  # contrast
-    106,  # sketchy
-    250,  # soft gray
-    305,  # detail
-    366,  # quiet
-]
+# Best match per slug for the four reference paintings
+SLUG_TO_LOCAL_FILE: dict[str, str] = {
+    # Four reference paintings (user-provided)
+    "nilo-nayan-phoolbhitra": "nayan-nilo-ankha.png",
+    "gaun-ko-ghar-bagaicha": "ghar-bagaicha-landscape.png",
+    "charcoal-gaun-ko-bato": "charcoal-gaon-bato.png",
+    "kala-safed-fashion-portrait": "fashion-portrait-black-white.png",
+    "neta-ko-nayan-blue-eye-portrait": "nayan-nilo-ankha.png",
+    "bhadragol-sundar-akhi": "nayan-nilo-ankha.png",
+    "aankhako-bhaav-sketch": "nayan-nilo-ankha.png",
+    "pahadi-naari-portrait": "nayan-nilo-ankha.png",
+    "gaaun-ko-bato": "ghar-bagaicha-landscape.png",
+    "phewa-tal-bihani": "ghar-bagaicha-landscape.png",
+    "terai-khet-hari": "ghar-bagaicha-landscape.png",
+    "fulbari-sanjha": "ghar-bagaicha-landscape.png",
+    "himal-ko-bhor": "ghar-bagaicha-landscape.png",
+    "koshi-nadiko-kinara": "ghar-bagaicha-landscape.png",
+    "charcoal-gaaun-saanjh": "charcoal-gaon-bato.png",
+    "raat-ko-bato-charcoal": "charcoal-gaon-bato.png",
+    "pencil-ko-pahaad": "charcoal-gaon-bato.png",
+    "mustang-dharahara-pencil": "charcoal-gaon-bato.png",
+    "aakash-pencil-sketch": "charcoal-gaon-bato.png",
+    "ghaam-pani-charcoal": "charcoal-gaon-bato.png",
+    "graphite-portrait-budha": "charcoal-gaon-bato.png",
+    "rato-oth-ko-roop": "fashion-portrait-black-white.png",
+    "buwa-ko-muhar": "fashion-portrait-black-white.png",
+}
 
 
 def _pool_index(slug: str, pool_size: int) -> int:
@@ -45,41 +52,43 @@ def _pool_index(slug: str, pool_size: int) -> int:
     return int(digest, 16) % pool_size
 
 
-def external_image_url_for_product(product) -> str:
-    """Public URL for a product when no uploaded file exists yet."""
-    category_slug = getattr(product.category, "slug", "") or ""
-    medium = getattr(product, "medium", "") or ""
-
-    if category_slug == "pencil-paintings" or medium == "pencil":
-        pool = PENCIL_PICSUM_IDS
-    else:
-        pool = COLOR_PICSUM_IDS
-
-    photo_id = pool[_pool_index(product.slug, len(pool))]
-    return f"https://picsum.photos/id/{photo_id}/400/500"
+def local_image_path_for_product(product) -> Path | None:
+    slug = getattr(product, "slug", "") or ""
+    filename = SLUG_TO_LOCAL_FILE.get(slug)
+    if not filename:
+        filename = LOCAL_PAINTINGS[_pool_index(slug, len(LOCAL_PAINTINGS))]
+    path = SEED_IMAGES_DIR / filename
+    return path if path.is_file() else None
 
 
-def download_image(url: str, timeout: int = 45) -> bytes:
-    request = urllib.request.Request(
-        url,
-        headers={"User-Agent": "ChitraBazarCatalogSeed/1.0"},
-    )
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        return response.read()
+def external_image_url_for_product(product) -> str | None:
+    """Relative media path hint when no file is attached yet (dev fallback)."""
+    path = local_image_path_for_product(product)
+    if path:
+        return f"/media/seed-preview/{path.name}"
+    return None
+
+
+def read_local_image(product) -> tuple[bytes, str] | None:
+    path = local_image_path_for_product(product)
+    if not path:
+        return None
+    ext = path.suffix.lower()
+    return path.read_bytes(), ext
 
 
 def attach_catalog_image(product, stdout=None, style=None) -> bool:
-    """Download and save primary ProductImage for one product."""
     from products.models import ProductImage
 
-    url = external_image_url_for_product(product)
-    try:
-        data = download_image(url)
-    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+    local = read_local_image(product)
+    if not local:
         if stdout and style:
-            stdout.write(style.WARNING(f"  ! image failed for {product.slug}: {exc}"))
+            stdout.write(
+                style.WARNING(f"  ! no local painting for {product.slug}")
+            )
         return False
 
+    data, ext = local
     ProductImage.objects.filter(product=product).delete()
     record = ProductImage(
         product=product,
@@ -87,7 +96,7 @@ def attach_catalog_image(product, stdout=None, style=None) -> bool:
         is_primary=True,
         sort_order=0,
     )
-    record.image.save(f"{product.slug}.jpg", ContentFile(data), save=True)
+    record.image.save(f"{product.slug}{ext}", ContentFile(data), save=True)
     if stdout:
         stdout.write(f"  img {product.name}")
     return True

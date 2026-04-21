@@ -5,12 +5,16 @@ from products.models import Category, Product, ProductImage, StoreSettings
 
 
 def build_absolute_media_url(request, file_field):
+    """Return a URL the browser can load (relative /media/ works with Vite proxy)."""
     if not file_field:
         return None
     url = file_field.url
-    if request:
-        return request.build_absolute_uri(url)
-    return url
+    if not request:
+        return url
+    # Prefer same-origin relative path so Vite dev proxy serves /media correctly
+    if request.get_host().startswith("127.0.0.1") or request.get_host().startswith("localhost"):
+        return url
+    return request.build_absolute_uri(url)
 
 
 class StoreSettingsSerializer(serializers.ModelSerializer):

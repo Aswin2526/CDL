@@ -5,7 +5,7 @@ import { toggleWishlistItem } from '../../redux/wishlist/wishlistSlice'
 import { selectIsInWishlist } from '../../redux/wishlist/wishlistSlice'
 import {
   ROUTES,
-  PLACEHOLDER_IMAGE,
+  resolveMediaUrl,
   formatPrice,
   formatMedium,
 } from '../../utils/constants'
@@ -15,7 +15,7 @@ function ProductCard({ product }) {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const inWishlist = useSelector(selectIsInWishlist(product.id))
-  const image = product.primary_image || PLACEHOLDER_IMAGE
+  const image = resolveMediaUrl(product.primary_image)
 
   const handleWishlist = (e) => {
     e.preventDefault()

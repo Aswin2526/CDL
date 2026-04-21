@@ -11,6 +11,7 @@ import StarRating from '../../components/common/StarRating'
 import {
   ROUTES,
   PLACEHOLDER_IMAGE,
+  resolveMediaUrl,
   formatPrice,
   formatMedium,
 } from '../../utils/constants'
@@ -41,7 +42,7 @@ function ProductDetailPage() {
 
   const images =
     detail?.images?.length > 0
-      ? detail.images.map((img) => img.image)
+      ? detail.images.map((img) => resolveMediaUrl(img.image))
       : [PLACEHOLDER_IMAGE]
 
   const handleReview = async (e) => {

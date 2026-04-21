@@ -49,6 +49,24 @@ export const CATEGORY_ICONS = {
 export const PLACEHOLDER_IMAGE =
   'https://placehold.co/400x500/f5f5f4/78350f?text=ChitraBazar'
 
+/** Turn API media paths into URLs the browser can load (Vite proxies /media in dev). */
+export const resolveMediaUrl = (url) => {
+  if (!url) return PLACEHOLDER_IMAGE
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    try {
+      const parsed = new URL(url)
+      if (parsed.pathname.startsWith('/media/')) {
+        return parsed.pathname
+      }
+    } catch {
+      return url
+    }
+    return url
+  }
+  if (url.startsWith('/media/')) return url
+  return url.startsWith('/') ? url : `/${url}`
+}
+
 export const formatPrice = (price) => {
   const num = Number(price)
   if (Number.isNaN(num)) return price
