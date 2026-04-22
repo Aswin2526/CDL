@@ -1,49 +1,57 @@
 """
-Artwork images for catalog seeding and API fallbacks.
-Prefers bundled painting files in backend/seed_images/ (real artworks).
+Artwork images for catalog seeding — exactly one unique image per product slug.
+Four user reference paintings use local files; every other slug has its own Picsum ID.
 """
 
 import hashlib
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 from django.core.files.base import ContentFile
 
-# backend/seed_images/ — four reference paintings supplied for ChitraBazar
 SEED_IMAGES_DIR = Path(__file__).resolve().parent.parent / "seed_images"
 
-LOCAL_PAINTINGS = [
-    "nayan-nilo-ankha.png",
-    "ghar-bagaicha-landscape.png",
-    "charcoal-gaon-bato.png",
-    "fashion-portrait-black-white.png",
-]
-
-# Best match per slug for the four reference paintings
-SLUG_TO_LOCAL_FILE: dict[str, str] = {
-    # Four reference paintings (user-provided)
+REFERENCE_LOCAL: dict[str, str] = {
     "nilo-nayan-phoolbhitra": "nayan-nilo-ankha.png",
     "gaun-ko-ghar-bagaicha": "ghar-bagaicha-landscape.png",
     "charcoal-gaun-ko-bato": "charcoal-gaon-bato.png",
     "kala-safed-fashion-portrait": "fashion-portrait-black-white.png",
-    "neta-ko-nayan-blue-eye-portrait": "nayan-nilo-ankha.png",
-    "bhadragol-sundar-akhi": "nayan-nilo-ankha.png",
-    "aankhako-bhaav-sketch": "nayan-nilo-ankha.png",
-    "pahadi-naari-portrait": "nayan-nilo-ankha.png",
-    "gaaun-ko-bato": "ghar-bagaicha-landscape.png",
-    "phewa-tal-bihani": "ghar-bagaicha-landscape.png",
-    "terai-khet-hari": "ghar-bagaicha-landscape.png",
-    "fulbari-sanjha": "ghar-bagaicha-landscape.png",
-    "himal-ko-bhor": "ghar-bagaicha-landscape.png",
-    "koshi-nadiko-kinara": "ghar-bagaicha-landscape.png",
-    "charcoal-gaaun-saanjh": "charcoal-gaon-bato.png",
-    "raat-ko-bato-charcoal": "charcoal-gaon-bato.png",
-    "pencil-ko-pahaad": "charcoal-gaon-bato.png",
-    "mustang-dharahara-pencil": "charcoal-gaon-bato.png",
-    "aakash-pencil-sketch": "charcoal-gaon-bato.png",
-    "ghaam-pani-charcoal": "charcoal-gaon-bato.png",
-    "graphite-portrait-budha": "charcoal-gaon-bato.png",
-    "rato-oth-ko-roop": "fashion-portrait-black-white.png",
-    "buwa-ko-muhar": "fashion-portrait-black-white.png",
+}
+
+# One unique Picsum photo ID per slug — no duplicates in the gallery
+SLUG_TO_PICSUM_ID: dict[str, int] = {
+    "neta-ko-nayan-blue-eye-portrait": 1011,
+    "bhadragol-sundar-akhi": 1005,
+    "rato-oth-ko-roop": 1027,
+    "pahadi-naari-portrait": 1062,
+    "buwa-ko-muhar": 1074,
+    "phewa-tal-bihani": 15,
+    "gaaun-ko-bato": 29,
+    "himal-ko-bhor": 37,
+    "fulbari-sanjha": 64,
+    "terai-khet-hari": 96,
+    "koshi-nadiko-kinara": 119,
+    "rangeen-sapana": 175,
+    "naya-bihani-rang": 180,
+    "rang-ko-khel": 213,
+    "phool-ko-ful": 225,
+    "bagaincha-ko-mewa": 287,
+    "lali-gurans-phuleko": 338,
+    "indra-jatra-utsav": 367,
+    "seto-machindranath-rath": 111,
+    "taal-ko-rang": 146,
+    "holi-ko-khushi": 152,
+    "parijat-phul": 1080,
+    "charcoal-gaaun-saanjh": 24,
+    "pencil-ko-pahaad": 48,
+    "graphite-portrait-budha": 52,
+    "raat-ko-bato-charcoal": 60,
+    "aankhako-bhaav-sketch": 106,
+    "mustang-dharahara-pencil": 250,
+    "aakash-pencil-sketch": 305,
+    "ghaam-pani-charcoal": 366,
 }
 
 
@@ -52,43 +60,56 @@ def _pool_index(slug: str, pool_size: int) -> int:
     return int(digest, 16) % pool_size
 
 
-def local_image_path_for_product(product) -> Path | None:
+def picsum_url_for_slug(slug: str) -> str:
+    photo_id = SLUG_TO_PICSUM_ID.get(slug)
+    if photo_id is None:
+        photo_id = 100 + _pool_index(slug, 900)
+    return f"https://picsum.photos/id/{photo_id}/600/700"
+
+
+def image_source_for_product(product) -> tuple[str, str]:
     slug = getattr(product, "slug", "") or ""
-    filename = SLUG_TO_LOCAL_FILE.get(slug)
-    if not filename:
-        filename = LOCAL_PAINTINGS[_pool_index(slug, len(LOCAL_PAINTINGS))]
-    path = SEED_IMAGES_DIR / filename
-    return path if path.is_file() else None
+    if slug in REFERENCE_LOCAL:
+        path = SEED_IMAGES_DIR / REFERENCE_LOCAL[slug]
+        if path.is_file():
+            return ("local", str(path))
+    return ("url", picsum_url_for_slug(slug))
 
 
-def external_image_url_for_product(product) -> str | None:
-    """Relative media path hint when no file is attached yet (dev fallback)."""
-    path = local_image_path_for_product(product)
-    if path:
-        return f"/media/seed-preview/{path.name}"
-    return None
+def external_image_url_for_product(product) -> str:
+    kind, src = image_source_for_product(product)
+    if kind == "url":
+        return src
+    return f"/media/seed-preview/{Path(src).name}"
 
 
-def read_local_image(product) -> tuple[bytes, str] | None:
-    path = local_image_path_for_product(product)
-    if not path:
-        return None
-    ext = path.suffix.lower()
-    return path.read_bytes(), ext
+def download_image(url: str, timeout: int = 60) -> bytes:
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "ChitraBazarCatalogSeed/1.0"},
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.read()
 
 
 def attach_catalog_image(product, stdout=None, style=None) -> bool:
     from products.models import ProductImage
 
-    local = read_local_image(product)
-    if not local:
+    kind, src = image_source_for_product(product)
+
+    try:
+        if kind == "local":
+            path = Path(src)
+            data = path.read_bytes()
+            ext = path.suffix.lower()
+        else:
+            data = download_image(src)
+            ext = ".jpg"
+    except (urllib.error.URLError, TimeoutError, OSError, FileNotFoundError) as exc:
         if stdout and style:
-            stdout.write(
-                style.WARNING(f"  ! no local painting for {product.slug}")
-            )
+            stdout.write(style.WARNING(f"  ! {product.slug}: {exc}"))
         return False
 
-    data, ext = local
     ProductImage.objects.filter(product=product).delete()
     record = ProductImage(
         product=product,
@@ -107,9 +128,13 @@ def attach_images_for_all_products(stdout=None, style=None) -> tuple[int, int]:
 
     ok = 0
     failed = 0
-    for product in Product.objects.select_related("category").order_by("id"):
+    products = list(Product.objects.select_related("category").order_by("id"))
+    for i, product in enumerate(products):
         if attach_catalog_image(product, stdout=stdout, style=style):
             ok += 1
         else:
             failed += 1
+        # Gentle delay so Picsum does not throttle bulk downloads
+        if i < len(products) - 1:
+            time.sleep(0.35)
     return ok, failed
