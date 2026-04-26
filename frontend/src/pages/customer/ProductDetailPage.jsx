@@ -7,7 +7,7 @@ import { selectIsAuthenticated } from '../../redux/auth/authSlice'
 import { addProductReview, fetchProductReviews } from '../../services/productService'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import EmptyState from '../../components/common/EmptyState'
-import StarRating from '../../components/common/StarRating'
+import StarRating, { StarOutline } from '../../components/common/StarRating'
 import {
   ROUTES,
   PLACEHOLDER_IMAGE,
@@ -117,9 +117,9 @@ function ProductDetailPage() {
           {detail.artist_name && (
             <p className="mt-2 text-lg text-stone-600">by {detail.artist_name}</p>
           )}
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <StarRating rating={detail.average_rating} size="lg" />
-            <span className="ml-2 text-sm text-gray-500">
+            <span className="text-sm text-gray-500">
               {detail.review_count} review{detail.review_count !== 1 ? 's' : ''}
             </span>
           </div>
@@ -216,14 +216,20 @@ function ProductDetailPage() {
       </div>
 
       <section className="mt-16 border-t border-stone-200 pt-12">
-        <h2 className="text-xl font-bold text-gray-900">Collector reviews</h2>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+          <StarOutline className="h-5 w-5" />
+          Collector reviews
+        </h2>
 
         {isAuthenticated && (
           <form
             onSubmit={handleReview}
             className="mt-6 max-w-lg rounded-xl border border-stone-200 bg-white p-4"
           >
-            <label className="block text-sm font-medium text-gray-700">Your rating</label>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <StarOutline className="h-5 w-5" />
+              Your rating
+            </label>
             <select
               value={reviewForm.rating}
               onChange={(e) => setReviewForm((f) => ({ ...f, rating: Number(e.target.value) }))}
