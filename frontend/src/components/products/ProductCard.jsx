@@ -64,12 +64,9 @@ function ProductCard({ product }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        {product.artist_name && (
-          <p className="text-xs font-medium text-amber-900">by {product.artist_name}</p>
-        )}
         <Link
           to={`${ROUTES.PRODUCT}/${product.slug}`}
-          className="mt-1 line-clamp-2 font-medium text-gray-900 hover:text-amber-800"
+          className="line-clamp-2 font-medium text-gray-900 hover:text-amber-800"
         >
           {product.name}
         </Link>
