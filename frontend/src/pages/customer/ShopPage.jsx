@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import FilterSidebar from '../../components/filters/FilterSidebar'
 import SortDropdown from '../../components/filters/SortDropdown'
-import SearchBar from '../../components/filters/SearchBar'
 import ProductGrid from '../../components/products/ProductGrid'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import EmptyState from '../../components/common/EmptyState'
@@ -80,9 +79,6 @@ function ShopPage() {
             ? `${listCount} painting${listCount !== 1 ? 's' : ''} available`
             : 'Browse original artworks from our gallery'}
         </p>
-        <div className="mt-4 max-w-xl">
-          <SearchBar initialValue={filters.q} />
-        </div>
       </div>
 
       <div className="flex flex-col gap-8 lg:flex-row">
@@ -122,7 +118,7 @@ function ShopPage() {
           {!listLoading && !listError && list.length === 0 && (
             <EmptyState
               title="No paintings found"
-              message="Try adjusting your search, style, or medium filters."
+              message="Try adjusting your style or medium filters."
             />
           )}
           {!listLoading && !listError && list.length > 0 && <ProductGrid products={list} />}
