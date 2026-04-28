@@ -7,7 +7,6 @@ import {
   ROUTES,
   resolveMediaUrl,
   formatPrice,
-  formatMedium,
 } from '../../utils/constants'
 import StarRating from '../common/StarRating'
 
@@ -59,12 +58,6 @@ function ProductCard({ product }) {
         >
           {product.name}
         </Link>
-        {product.medium && (
-          <p className="mt-1 text-xs text-stone-500">
-            {formatMedium(product.medium)}
-            {product.dimensions ? ` · ${product.dimensions}` : ''}
-          </p>
-        )}
         <div className="mt-2">
           <StarRating rating={product.average_rating} />
         </div>
