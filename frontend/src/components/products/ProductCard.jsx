@@ -38,11 +38,6 @@ function ProductCard({ product }) {
             alt={product.name}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
-          {product.is_featured && (
-            <span className="absolute left-2 top-2 rounded bg-amber-600 px-2 py-0.5 text-xs font-semibold text-white">
-              Featured
-            </span>
-          )}
           {!product.in_stock && (
             <span className="absolute bottom-2 left-2 rounded bg-stone-800 px-2 py-0.5 text-xs text-white">
               Sold

@@ -41,14 +41,12 @@ export const loadHomeData = createAsyncThunk(
   'products/loadHome',
   async (_, { rejectWithValue }) => {
     try {
-      const [featured, latest, topRated, categories] = await Promise.all([
-        productService.fetchFeaturedProducts(),
+      const [latest, topRated, categories] = await Promise.all([
         productService.fetchLatestProducts(),
         productService.fetchTopRatedProducts(),
         productService.fetchCategories(),
       ])
       return {
-        featured: featured.data.results ?? featured.data,
         latest: latest.data.results ?? latest.data,
         topRated: topRated.data.results ?? topRated.data,
         categories: categories.data.results ?? categories.data,
@@ -70,7 +68,6 @@ const productSlice = createSlice({
     detailLoading: false,
     detailError: null,
     categories: [],
-    featured: [],
     latest: [],
     topRated: [],
     homeLoading: false,
@@ -137,7 +134,6 @@ const productSlice = createSlice({
       })
       .addCase(loadHomeData.fulfilled, (state, action) => {
         state.homeLoading = false
-        state.featured = action.payload.featured
         state.latest = action.payload.latest
         state.topRated = action.payload.topRated
         state.categories = action.payload.categories

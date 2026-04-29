@@ -12,7 +12,7 @@ import { APP_NAME, APP_TAGLINE, ROUTES, CATEGORY_ICONS } from '../utils/constant
 function HomePage() {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
-  const { featured, latest, topRated, categories, homeLoading } = useSelector(
+  const { latest, topRated, categories, homeLoading } = useSelector(
     (state) => state.products,
   )
 
@@ -82,24 +82,6 @@ function HomePage() {
             ))}
           </div>
         )}
-      </section>
-
-      <section className="bg-stone-50 py-12">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 md:text-2xl">Featured artworks</h2>
-            <Link to={ROUTES.SHOP} className="text-sm font-medium text-amber-800 hover:underline">
-              View all
-            </Link>
-          </div>
-          {homeLoading ? (
-            <LoadingSpinner />
-          ) : (
-            <div className="mt-6">
-              <ProductGrid products={featured} />
-            </div>
-          )}
-        </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12">
