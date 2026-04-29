@@ -69,7 +69,7 @@ function FilterSidebar({ categories, filters, onChange, onApply, onReset }) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Min. rating</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Rating</label>
           <select
             value={filters.min_rating}
             onChange={(e) => handle('min_rating', e.target.value)}
