@@ -56,7 +56,7 @@ function CartPage() {
               return (
                 <li
                   key={item.id}
-                  className="flex gap-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm"
+                  className="flex items-center gap-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm"
                 >
                   <Link
                     to={`${ROUTES.PRODUCT}/${p.slug}`}
@@ -75,14 +75,17 @@ function CartPage() {
                     <p className="mt-2 font-semibold text-gray-900">
                       {formatPrice(item.line_total)}
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(p.id)}
-                      className="mt-2 text-sm font-medium text-red-600 hover:text-red-800"
-                    >
-                      Remove
-                    </button>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(p.id)}
+                    className="shrink-0 rounded-lg border border-stone-200 p-2 text-stone-500 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                    aria-label={`Remove ${p.name} from cart`}
+                  >
+                    <span className="text-lg leading-none" aria-hidden>
+                      ×
+                    </span>
+                  </button>
                 </li>
               )
             })}
