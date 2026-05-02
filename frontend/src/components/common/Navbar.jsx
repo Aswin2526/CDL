@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, selectAuth, selectIsAuthenticated } from '../../redux/auth/authSlice'
+import { selectCartItemCount } from '../../redux/cart/cartSlice'
 import SearchBar from '../filters/SearchBar'
 import { APP_NAME, ROUTES } from '../../utils/constants'
 
@@ -9,6 +10,7 @@ function Navbar() {
   const navigate = useNavigate()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const { user } = useSelector(selectAuth)
+  const cartCount = useSelector(selectCartItemCount)
 
   const handleLogout = async () => {
     await dispatch(logout())
@@ -29,6 +31,9 @@ function Navbar() {
               </li>
               {isAuthenticated ? (
                 <>
+                  <li>
+                    <Link to={ROUTES.CART}>Cart{cartCount > 0 ? ` (${cartCount})` : ''}</Link>
+                  </li>
                   <li>
                     <Link to={ROUTES.WISHLIST}>♥</Link>
                   </li>
@@ -72,11 +77,23 @@ function Navbar() {
               </Link>
             </li>
             {isAuthenticated && (
-              <li>
-                <Link to={ROUTES.WISHLIST} className="hover:text-amber-700">
-                  Wishlist
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link to={ROUTES.CART} className="hover:text-amber-700">
+                    Cart
+                    {cartCount > 0 && (
+                      <span className="ml-1 rounded-full bg-amber-600 px-1.5 py-0.5 text-xs text-white">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={ROUTES.WISHLIST} className="hover:text-amber-700">
+                    Wishlist
+                  </Link>
+                </li>
+              </>
             )}
             {isAuthenticated ? (
               <>

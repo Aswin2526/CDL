@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadProductDetail } from '../../redux/product/productSlice'
 import { toggleWishlistItem, selectIsInWishlist } from '../../redux/wishlist/wishlistSlice'
+import { addCartItem, selectIsInCart } from '../../redux/cart/cartSlice'
 import { selectIsAuthenticated } from '../../redux/auth/authSlice'
 import { addProductReview, fetchProductReviews } from '../../services/productService'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -19,9 +20,13 @@ import {
 function ProductDetailPage() {
   const { slug } = useParams()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const { detail, detailLoading, detailError } = useSelector((state) => state.products)
   const inWishlist = useSelector(selectIsInWishlist(detail?.id))
+  const inCart = useSelector(selectIsInCart(detail?.id))
+  const cartAdding = useSelector((state) => state.cart.adding)
+  const cartError = useSelector((state) => state.cart.error)
 
   const [reviews, setReviews] = useState([])
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' })
@@ -179,11 +184,42 @@ function ProductDetailPage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <button
               type="button"
-              disabled
-              className="flex-1 cursor-not-allowed rounded-lg bg-stone-200 py-3 font-medium text-stone-500 sm:flex-none sm:px-8"
+              disabled={!detail.in_stock || cartAdding}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  window.location.href = ROUTES.LOGIN
+                  return
+                }
+                if (inCart) {
+                  navigate(ROUTES.CART)
+                  return
+                }
+                dispatch(addCartItem(detail.id))
+              }}
+              className={`flex-1 rounded-lg py-3 font-semibold sm:flex-none sm:px-8 ${
+                !detail.in_stock
+                  ? 'cursor-not-allowed bg-stone-200 text-stone-500'
+                  : inCart
+                    ? 'border border-amber-600 bg-amber-50 text-amber-900 hover:bg-amber-100'
+                    : 'bg-amber-600 text-white hover:bg-amber-700'
+              }`}
             >
-              Buy now (Phase 4)
+              {!detail.in_stock
+                ? 'Sold out'
+                : cartAdding
+                  ? 'Adding…'
+                  : inCart
+                    ? 'In cart — view cart'
+                    : 'Add to cart'}
             </button>
+            {inCart && (
+              <Link
+                to={ROUTES.CART}
+                className="rounded-lg border border-amber-600 px-6 py-3 font-medium text-amber-800 hover:bg-amber-50"
+              >
+                View cart
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => {
@@ -202,6 +238,9 @@ function ProductDetailPage() {
               {inWishlist ? 'Saved to wishlist' : 'Save to wishlist'}
             </button>
           </div>
+          {cartError && (
+            <p className="mt-2 text-sm text-red-600">{cartError}</p>
+          )}
 
           {detail.store && (
             <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-4">

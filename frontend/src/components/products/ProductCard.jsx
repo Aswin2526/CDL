@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsAuthenticated } from '../../redux/auth/authSlice'
-import { toggleWishlistItem } from '../../redux/wishlist/wishlistSlice'
-import { selectIsInWishlist } from '../../redux/wishlist/wishlistSlice'
+import { toggleWishlistItem, selectIsInWishlist } from '../../redux/wishlist/wishlistSlice'
+import { addCartItem, selectIsInCart } from '../../redux/cart/cartSlice'
 import {
   ROUTES,
   resolveMediaUrl,
@@ -14,6 +14,8 @@ function ProductCard({ product }) {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const inWishlist = useSelector(selectIsInWishlist(product.id))
+  const inCart = useSelector(selectIsInCart(product.id))
+  const adding = useSelector((state) => state.cart.adding)
   const image = resolveMediaUrl(product.primary_image)
 
   const handleWishlist = (e) => {
@@ -24,6 +26,15 @@ function ProductCard({ product }) {
       return
     }
     dispatch(toggleWishlistItem(product.id))
+  }
+
+  const handleAddToCart = (e) => {
+    e.preventDefault()
+    if (!isAuthenticated) {
+      window.location.href = ROUTES.LOGIN
+      return
+    }
+    dispatch(addCartItem(product.id))
   }
 
   return (
@@ -73,11 +84,23 @@ function ProductCard({ product }) {
         <div className="mt-auto pt-4">
           <button
             type="button"
-            disabled
-            title="Checkout coming in next phase"
-            className="w-full cursor-not-allowed rounded-lg bg-stone-100 py-2 text-sm font-medium text-stone-500"
+            disabled={!product.in_stock || adding}
+            onClick={handleAddToCart}
+            className={`w-full rounded-lg py-2 text-sm font-semibold transition ${
+              !product.in_stock
+                ? 'cursor-not-allowed bg-stone-100 text-stone-400'
+                : inCart
+                  ? 'border border-amber-600 bg-amber-50 text-amber-900 hover:bg-amber-100'
+                  : 'bg-amber-600 text-white hover:bg-amber-700'
+            }`}
           >
-            Buy now
+            {!product.in_stock
+              ? 'Sold out'
+              : adding
+                ? 'Adding…'
+                : inCart
+                  ? 'In cart'
+                  : 'Add to cart'}
           </button>
         </div>
       </div>

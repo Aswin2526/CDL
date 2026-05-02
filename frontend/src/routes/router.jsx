@@ -11,6 +11,7 @@ import CustomerHome from '../pages/dashboard/CustomerHome'
 import ShopPage from '../pages/customer/ShopPage'
 import ProductDetailPage from '../pages/customer/ProductDetailPage'
 import WishlistPage from '../pages/customer/WishlistPage'
+import CartPage from '../pages/customer/CartPage'
 
 export const router = createBrowserRouter([
   {
@@ -38,7 +39,10 @@ export const router = createBrowserRouter([
       },
       {
         element: <ProtectedRoute />,
-        children: [{ path: 'wishlist', element: <WishlistPage /> }],
+        children: [
+          { path: 'wishlist', element: <WishlistPage /> },
+          { path: 'cart', element: <CartPage /> },
+        ],
       },
       {
         element: <ProtectedRoute allowedRoles={['admin']} />,
