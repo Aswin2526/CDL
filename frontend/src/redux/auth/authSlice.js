@@ -77,6 +77,20 @@ export const logout = createAsyncThunk('auth/logout', async (_, { getState }) =>
 })
 
 /** Restore session from stored JWT by loading the current profile. */
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await authService.updateProfile(payload)
+      return data
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { detail: 'Could not update profile.' },
+      )
+    }
+  },
+)
+
 export const initializeAuth = createAsyncThunk(
   'auth/initialize',
   async (_, { getState }) => {
@@ -162,6 +176,22 @@ const authSlice = createSlice({
         state.user = null
         state.accessToken = null
         state.refreshToken = null
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false
+        state.user = action.payload
+        persistAuth(action.payload, {
+          access: state.accessToken,
+          refresh: state.refreshToken,
+        })
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
       })
   },
 })
