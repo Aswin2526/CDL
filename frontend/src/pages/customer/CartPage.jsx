@@ -79,12 +79,9 @@ function CartPage() {
                   <button
                     type="button"
                     onClick={() => handleRemove(p.id)}
-                    className="shrink-0 rounded-lg border border-stone-200 p-2 text-stone-500 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-                    aria-label={`Remove ${p.name} from cart`}
+                    className="shrink-0 text-sm font-medium text-red-600 hover:text-red-800"
                   >
-                    <span className="text-lg leading-none" aria-hidden>
-                      ×
-                    </span>
+                    Remove
                   </button>
                 </li>
               )
