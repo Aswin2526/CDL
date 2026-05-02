@@ -34,6 +34,18 @@ export const removeCartItem = createAsyncThunk(
   },
 )
 
+export const updateCartItemQuantity = createAsyncThunk(
+  'cart/updateQuantity',
+  async ({ productId, quantity }, { rejectWithValue }) => {
+    try {
+      const { data } = await cartService.updateCartQuantity(productId, quantity)
+      return data
+    } catch (err) {
+      return rejectWithValue(err.response?.data)
+    }
+  },
+)
+
 const applyCartPayload = (state, cart) => {
   state.items = cart?.items ?? []
   state.itemCount = cart?.item_count ?? 0
@@ -50,6 +62,7 @@ const cartSlice = createSlice({
     subtotal: '0',
     loading: false,
     adding: false,
+    updatingProductId: null,
     error: null,
     lastMessage: null,
   },
@@ -93,6 +106,19 @@ const cartSlice = createSlice({
       .addCase(removeCartItem.fulfilled, (state, action) => {
         state.lastMessage = action.payload.message
         applyCartPayload(state, action.payload.cart)
+      })
+      .addCase(updateCartItemQuantity.pending, (state, action) => {
+        state.updatingProductId = action.meta.arg.productId
+        state.error = null
+      })
+      .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
+        state.updatingProductId = null
+        state.lastMessage = action.payload.message
+        applyCartPayload(state, action.payload.cart)
+      })
+      .addCase(updateCartItemQuantity.rejected, (state, action) => {
+        state.updatingProductId = null
+        state.error = action.payload?.detail || 'Could not update quantity.'
       })
   },
 })

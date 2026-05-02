@@ -1,7 +1,12 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadCart, removeCartItem } from '../../redux/cart/cartSlice'
+import {
+  loadCart,
+  removeCartItem,
+  updateCartItemQuantity,
+  clearCartMessage,
+} from '../../redux/cart/cartSlice'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import EmptyState from '../../components/common/EmptyState'
 import {
@@ -13,7 +18,9 @@ import {
 
 function CartPage() {
   const dispatch = useDispatch()
-  const { items, subtotal, loading } = useSelector((state) => state.cart)
+  const { items, subtotal, loading, updatingProductId, error } = useSelector(
+    (state) => state.cart,
+  )
 
   useEffect(() => {
     dispatch(loadCart())
@@ -21,6 +28,17 @@ function CartPage() {
 
   const handleRemove = (productId) => {
     dispatch(removeCartItem(productId))
+  }
+
+  const handleQuantityChange = (productId, currentQty, delta, maxStock) => {
+    const next = currentQty + delta
+    if (next < 1) {
+      dispatch(removeCartItem(productId))
+      return
+    }
+    if (next > maxStock) return
+    dispatch(clearCartMessage())
+    dispatch(updateCartItemQuantity({ productId, quantity: next }))
   }
 
   return (
@@ -47,6 +65,10 @@ function CartPage() {
         </div>
       )}
 
+      {error && (
+        <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+      )}
+
       {!loading && items.length > 0 && (
         <div className="mt-8 grid gap-8 lg:grid-cols-3">
           <ul className="space-y-4 lg:col-span-2">
@@ -71,7 +93,49 @@ function CartPage() {
                     >
                       {p.name}
                     </Link>
-                    <p className="mt-1 text-sm text-gray-500">Qty: {item.quantity}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-sm text-gray-500">Qty</span>
+                      <div className="inline-flex items-center rounded-lg border border-stone-200">
+                        <button
+                          type="button"
+                          disabled={updatingProductId === p.id}
+                          onClick={() =>
+                            handleQuantityChange(
+                              p.id,
+                              item.quantity,
+                              -1,
+                              p.stock ?? 1,
+                            )
+                          }
+                          className="px-2.5 py-1 text-lg leading-none text-gray-700 hover:bg-stone-100 disabled:opacity-50"
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+                        <span className="min-w-[2rem] border-x border-stone-200 px-2 py-1 text-center text-sm font-medium text-gray-900">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={
+                            updatingProductId === p.id ||
+                            item.quantity >= (p.stock ?? 1)
+                          }
+                          onClick={() =>
+                            handleQuantityChange(
+                              p.id,
+                              item.quantity,
+                              1,
+                              p.stock ?? 1,
+                            )
+                          }
+                          className="px-2.5 py-1 text-lg leading-none text-gray-700 hover:bg-stone-100 disabled:opacity-50"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                     <p className="mt-2 font-semibold text-gray-900">
                       {formatPrice(item.line_total)}
                     </p>

@@ -69,6 +69,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             "category",
             "category_slug",
             "primary_image",
+            "stock",
             "in_stock",
             "is_featured",
             "created_at",

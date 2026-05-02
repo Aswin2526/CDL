@@ -82,25 +82,82 @@ class CartAddView(APIView):
             item.quantity = new_qty
             item.save(update_fields=["quantity", "updated_at"])
 
-        cart = Cart.objects.prefetch_related(
-            "items__product__category",
-            "items__product__images",
-        ).get(pk=cart.pk)
-        data = CartSerializer(cart, context={"request": request}).data
         return Response(
             {
-                "message": "Added to cart.",
+                **_cart_response(cart, request, "Added to cart."),
                 "in_cart": True,
-                "cart": data,
             },
             status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
         )
 
 
-class CartRemoveView(APIView):
-    """DELETE /api/carts/items/<product_id>/."""
+def _cart_response(cart, request, message):
+    cart = Cart.objects.prefetch_related(
+        "items__product__category",
+        "items__product__images",
+    ).get(pk=cart.pk)
+    return {
+        "message": message,
+        "cart": CartSerializer(cart, context={"request": request}).data,
+    }
+
+
+class CartItemView(APIView):
+    """PATCH /api/carts/items/<product_id>/ — set quantity.
+    DELETE /api/carts/items/<product_id>/ — remove item."""
 
     permission_classes = [IsAuthenticated]
+
+    def patch(self, request, product_id):
+        try:
+            quantity = int(request.data.get("quantity"))
+        except (TypeError, ValueError):
+            return Response(
+                {"detail": "quantity is required and must be an integer."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        cart = get_or_create_cart(request.user)
+        item = (
+            CartItem.objects.filter(cart=cart, product_id=product_id)
+            .select_related("product")
+            .first()
+        )
+        if not item:
+            return Response(
+                {"detail": "Item not in cart."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        product = item.product
+        if quantity < 1:
+            item.delete()
+            return Response(
+                {
+                    **_cart_response(cart, request, "Removed from cart."),
+                    "in_cart": False,
+                }
+            )
+
+        if not product.is_active or not product.in_stock:
+            return Response(
+                {"detail": "This painting is no longer available."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if quantity > product.stock:
+            return Response(
+                {"detail": f"Only {product.stock} available."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        item.quantity = quantity
+        item.save(update_fields=["quantity", "updated_at"])
+        return Response(
+            {
+                **_cart_response(cart, request, "Quantity updated."),
+                "in_cart": True,
+            }
+        )
 
     def delete(self, request, product_id):
         cart = get_or_create_cart(request.user)
@@ -110,15 +167,10 @@ class CartRemoveView(APIView):
                 {"detail": "Item not in cart."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        cart = Cart.objects.prefetch_related(
-            "items__product__category",
-            "items__product__images",
-        ).get(pk=cart.pk)
         return Response(
             {
-                "message": "Removed from cart.",
+                **_cart_response(cart, request, "Removed from cart."),
                 "in_cart": False,
-                "cart": CartSerializer(cart, context={"request": request}).data,
             }
         )
 
