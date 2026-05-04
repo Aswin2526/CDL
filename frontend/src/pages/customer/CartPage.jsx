@@ -25,9 +25,16 @@ function formatCartError(error) {
 
 function CartPage() {
   const dispatch = useDispatch()
-  const { items, subtotal, loading, updatingProductId, error } = useSelector(
-    (state) => state.cart,
-  )
+  const {
+    items,
+    subtotal,
+    total,
+    bulkDiscountEligible,
+    discountAmount,
+    loading,
+    updatingProductId,
+    error,
+  } = useSelector((state) => state.cart)
 
   useEffect(() => {
     dispatch(loadCart())
@@ -188,10 +195,31 @@ function CartPage() {
 
           <div className="h-fit rounded-xl border border-stone-200 bg-stone-50 p-6">
             <h2 className="text-lg font-semibold text-gray-900">Order summary</h2>
-            <div className="mt-4 flex justify-between text-gray-700">
-              <span>Subtotal</span>
-              <span className="font-semibold">{formatPrice(subtotal)}</span>
+            <div className="mt-4 space-y-2 text-gray-700">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>{formatPrice(subtotal)}</span>
+              </div>
+              {bulkDiscountEligible && (
+                <div className="flex justify-between text-green-700">
+                  <span>Bulk discount (5%)</span>
+                  <span>−{formatPrice(discountAmount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between border-t border-stone-200 pt-2 text-base font-semibold text-gray-900">
+                <span>Total</span>
+                <span>{formatPrice(total)}</span>
+              </div>
             </div>
+            {bulkDiscountEligible ? (
+              <p className="mt-3 rounded-lg bg-green-50 px-3 py-2 text-xs text-green-800">
+                You saved 5% for ordering more than 1 piece.
+              </p>
+            ) : (
+              <p className="mt-3 text-xs text-gray-500">
+                Add another piece (qty 2+) to get 5% off your order.
+              </p>
+            )}
             <p className="mt-2 text-xs text-gray-500">
               Shipping and checkout will be available in the next update.
             </p>

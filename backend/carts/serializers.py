@@ -18,8 +18,26 @@ class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
     item_count = serializers.IntegerField(read_only=True)
     subtotal = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    bulk_discount_eligible = serializers.BooleanField(read_only=True)
+    discount_percent = serializers.DecimalField(
+        max_digits=5, decimal_places=2, read_only=True
+    )
+    discount_amount = serializers.DecimalField(
+        max_digits=12, decimal_places=2, read_only=True
+    )
+    total = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
 
     class Meta:
         model = Cart
-        fields = ("id", "items", "item_count", "subtotal", "updated_at")
+        fields = (
+            "id",
+            "items",
+            "item_count",
+            "subtotal",
+            "bulk_discount_eligible",
+            "discount_percent",
+            "discount_amount",
+            "total",
+            "updated_at",
+        )
         read_only_fields = fields

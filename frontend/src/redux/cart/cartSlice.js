@@ -47,18 +47,46 @@ export const updateCartItemQuantity = createAsyncThunk(
   },
 )
 
+const BULK_DISCOUNT_RATE = 0.05
+
+const calcCartTotals = (items) => {
+  const subtotalNum = items.reduce(
+    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    0,
+  )
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+  const bulkDiscountEligible = itemCount > 1
+  const discountAmount = bulkDiscountEligible ? subtotalNum * BULK_DISCOUNT_RATE : 0
+  const total = subtotalNum - discountAmount
+  return {
+    subtotal: subtotalNum.toFixed(2),
+    itemCount,
+    bulkDiscountEligible,
+    discountPercent: bulkDiscountEligible ? '5' : '0',
+    discountAmount: discountAmount.toFixed(2),
+    total: total.toFixed(2),
+  }
+}
+
 const applyCartPayload = (state, cart) => {
   state.items = cart?.items ?? []
   state.itemCount = cart?.item_count ?? 0
   state.subtotal = cart?.subtotal ?? '0'
+  state.bulkDiscountEligible = Boolean(cart?.bulk_discount_eligible)
+  state.discountPercent = cart?.discount_percent ?? '0'
+  state.discountAmount = cart?.discount_amount ?? '0'
+  state.total = cart?.total ?? state.subtotal
   state.productIds = state.items.map((item) => item.product.id)
 }
 
 const recalcSubtotal = (state) => {
-  state.subtotal = state.items
-    .reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0)
-    .toFixed(2)
-  state.itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0)
+  const totals = calcCartTotals(state.items)
+  state.subtotal = totals.subtotal
+  state.itemCount = totals.itemCount
+  state.bulkDiscountEligible = totals.bulkDiscountEligible
+  state.discountPercent = totals.discountPercent
+  state.discountAmount = totals.discountAmount
+  state.total = totals.total
 }
 
 const applyOptimisticQuantity = (state, productId, quantity) => {
@@ -76,6 +104,10 @@ const cartSlice = createSlice({
     productIds: [],
     itemCount: 0,
     subtotal: '0',
+    bulkDiscountEligible: false,
+    discountPercent: '0',
+    discountAmount: '0',
+    total: '0',
     loading: false,
     adding: false,
     updatingProductId: null,
@@ -92,6 +124,10 @@ const cartSlice = createSlice({
       state.productIds = []
       state.itemCount = 0
       state.subtotal = '0'
+      state.bulkDiscountEligible = false
+      state.discountPercent = '0'
+      state.discountAmount = '0'
+      state.total = '0'
     },
     setCartError(state, action) {
       state.error = action.payload

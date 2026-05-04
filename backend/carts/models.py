@@ -1,6 +1,10 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
+
+BULK_DISCOUNT_PERCENT = Decimal("5")
 
 
 class Cart(models.Model):
@@ -22,6 +26,26 @@ class Cart(models.Model):
     @property
     def subtotal(self):
         return sum(item.line_total for item in self.items.select_related("product"))
+
+    @property
+    def bulk_discount_eligible(self):
+        return self.item_count > 1
+
+    @property
+    def discount_percent(self):
+        return BULK_DISCOUNT_PERCENT if self.bulk_discount_eligible else Decimal("0")
+
+    @property
+    def discount_amount(self):
+        if not self.bulk_discount_eligible:
+            return Decimal("0")
+        return (self.subtotal * BULK_DISCOUNT_PERCENT / Decimal("100")).quantize(
+            Decimal("0.01")
+        )
+
+    @property
+    def total(self):
+        return self.subtotal - self.discount_amount
 
 
 class CartItem(models.Model):
