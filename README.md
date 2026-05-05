@@ -15,7 +15,7 @@ Online painting gallery and e-commerce platform — a single store for original 
 ## Project Structure
 
 ```
-Foodie/
+ChitraBazar/
 ├── backend/          # Django API
 ├── frontend/         # React (Vite) client
 └── README.md
