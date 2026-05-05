@@ -6,6 +6,7 @@ import {
   removeCartItem,
   updateCartItemQuantity,
   clearCartMessage,
+  setCartError,
 } from '../../redux/cart/cartSlice'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import EmptyState from '../../components/common/EmptyState'
@@ -15,6 +16,12 @@ import {
   formatPrice,
   PLACEHOLDER_IMAGE,
 } from '../../utils/constants'
+
+function formatCartError(error) {
+  if (!error) return null
+  if (typeof error === 'string') return error
+  return error.detail || 'Something went wrong.'
+}
 
 function CartPage() {
   const dispatch = useDispatch()
@@ -30,15 +37,34 @@ function CartPage() {
     dispatch(removeCartItem(productId))
   }
 
-  const handleQuantityChange = (productId, currentQty, delta, maxStock) => {
-    const next = currentQty + delta
-    if (next < 1) {
+  const setQuantity = (productId, currentQty, nextQty, maxStock) => {
+    if (nextQty < 1) {
       dispatch(removeCartItem(productId))
       return
     }
-    if (next > maxStock) return
+    if (nextQty > maxStock) {
+      dispatch(
+        setCartError(
+          maxStock === 1
+            ? 'This original painting is one-of-a-kind — only 1 available.'
+            : `Only ${maxStock} available.`,
+        ),
+      )
+      return
+    }
+    if (nextQty === currentQty) return
     dispatch(clearCartMessage())
-    dispatch(updateCartItemQuantity({ productId, quantity: next }))
+    dispatch(updateCartItemQuantity({ productId, quantity: nextQty }))
+  }
+
+  const handleQuantityChange = (productId, currentQty, delta, maxStock) => {
+    setQuantity(productId, currentQty, currentQty + delta, maxStock)
+  }
+
+  const handleQuantityInput = (productId, currentQty, rawValue, maxStock) => {
+    const nextQty = parseInt(rawValue, 10)
+    if (Number.isNaN(nextQty)) return
+    setQuantity(productId, currentQty, nextQty, maxStock)
   }
 
   return (
@@ -66,7 +92,9 @@ function CartPage() {
       )}
 
       {error && (
-        <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          {formatCartError(error)}
+        </p>
       )}
 
       {!loading && items.length > 0 && (
@@ -74,6 +102,8 @@ function CartPage() {
           <ul className="space-y-4 lg:col-span-2">
             {items.map((item) => {
               const p = item.product
+              const maxStock = Math.max(1, Number(p.stock) || 1)
+              const isUpdating = updatingProductId === p.id
               const image = resolveMediaUrl(p.primary_image) || PLACEHOLDER_IMAGE
               return (
                 <li
@@ -93,48 +123,52 @@ function CartPage() {
                     >
                       {p.name}
                     </Link>
-                    <div className="mt-2 flex items-center gap-2">
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
                       <span className="text-sm text-gray-500">Qty</span>
-                      <div className="inline-flex items-center rounded-lg border border-stone-200">
+                      <div className="inline-flex items-center rounded-lg border border-stone-200 bg-white">
                         <button
                           type="button"
-                          disabled={updatingProductId === p.id}
+                          disabled={isUpdating}
                           onClick={() =>
-                            handleQuantityChange(
-                              p.id,
-                              item.quantity,
-                              -1,
-                              p.stock ?? 1,
-                            )
+                            handleQuantityChange(p.id, item.quantity, -1, maxStock)
                           }
-                          className="px-2.5 py-1 text-lg leading-none text-gray-700 hover:bg-stone-100 disabled:opacity-50"
+                          className="px-3 py-1.5 text-lg leading-none text-gray-700 hover:bg-stone-100 disabled:opacity-50"
                           aria-label="Decrease quantity"
                         >
                           −
                         </button>
-                        <span className="min-w-[2rem] border-x border-stone-200 px-2 py-1 text-center text-sm font-medium text-gray-900">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          disabled={
-                            updatingProductId === p.id ||
-                            item.quantity >= (p.stock ?? 1)
-                          }
-                          onClick={() =>
-                            handleQuantityChange(
+                        <input
+                          type="number"
+                          min={1}
+                          max={maxStock}
+                          value={item.quantity}
+                          disabled={isUpdating}
+                          onChange={(e) =>
+                            handleQuantityInput(
                               p.id,
                               item.quantity,
-                              1,
-                              p.stock ?? 1,
+                              e.target.value,
+                              maxStock,
                             )
                           }
-                          className="px-2.5 py-1 text-lg leading-none text-gray-700 hover:bg-stone-100 disabled:opacity-50"
+                          className="w-12 border-x border-stone-200 py-1.5 text-center text-sm font-medium text-gray-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          aria-label="Quantity"
+                        />
+                        <button
+                          type="button"
+                          disabled={isUpdating}
+                          onClick={() =>
+                            handleQuantityChange(p.id, item.quantity, 1, maxStock)
+                          }
+                          className="px-3 py-1.5 text-lg leading-none text-gray-700 hover:bg-stone-100 disabled:opacity-50"
                           aria-label="Increase quantity"
                         >
                           +
                         </button>
                       </div>
+                      {maxStock === 1 && (
+                        <span className="text-xs text-gray-400">1 piece only</span>
+                      )}
                     </div>
                     <p className="mt-2 font-semibold text-gray-900">
                       {formatPrice(item.line_total)}

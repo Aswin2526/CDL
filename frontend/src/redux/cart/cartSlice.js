@@ -36,11 +36,12 @@ export const removeCartItem = createAsyncThunk(
 
 export const updateCartItemQuantity = createAsyncThunk(
   'cart/updateQuantity',
-  async ({ productId, quantity }, { rejectWithValue }) => {
+  async ({ productId, quantity }, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await cartService.updateCartQuantity(productId, quantity)
       return data
     } catch (err) {
+      dispatch(loadCart())
       return rejectWithValue(err.response?.data)
     }
   },
@@ -51,6 +52,21 @@ const applyCartPayload = (state, cart) => {
   state.itemCount = cart?.item_count ?? 0
   state.subtotal = cart?.subtotal ?? '0'
   state.productIds = state.items.map((item) => item.product.id)
+}
+
+const recalcSubtotal = (state) => {
+  state.subtotal = state.items
+    .reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0)
+    .toFixed(2)
+  state.itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0)
+}
+
+const applyOptimisticQuantity = (state, productId, quantity) => {
+  const item = state.items.find((row) => row.product.id === productId)
+  if (!item) return
+  item.quantity = quantity
+  item.line_total = (Number(item.product.price) * quantity).toFixed(2)
+  recalcSubtotal(state)
 }
 
 const cartSlice = createSlice({
@@ -76,6 +92,9 @@ const cartSlice = createSlice({
       state.productIds = []
       state.itemCount = 0
       state.subtotal = '0'
+    },
+    setCartError(state, action) {
+      state.error = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -108,8 +127,10 @@ const cartSlice = createSlice({
         applyCartPayload(state, action.payload.cart)
       })
       .addCase(updateCartItemQuantity.pending, (state, action) => {
-        state.updatingProductId = action.meta.arg.productId
+        const { productId, quantity } = action.meta.arg
+        state.updatingProductId = productId
         state.error = null
+        applyOptimisticQuantity(state, productId, quantity)
       })
       .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
         state.updatingProductId = null
@@ -118,12 +139,14 @@ const cartSlice = createSlice({
       })
       .addCase(updateCartItemQuantity.rejected, (state, action) => {
         state.updatingProductId = null
-        state.error = action.payload?.detail || 'Could not update quantity.'
+        state.error =
+          action.payload?.detail ||
+          (typeof action.payload === 'string' ? action.payload : 'Could not update quantity.')
       })
   },
 })
 
-export const { clearCartMessage, resetCart } = cartSlice.actions
+export const { clearCartMessage, resetCart, setCartError } = cartSlice.actions
 export const selectIsInCart = (productId) => (state) =>
   state.cart.productIds.includes(productId)
 export const selectCartItemCount = (state) => state.cart.itemCount
