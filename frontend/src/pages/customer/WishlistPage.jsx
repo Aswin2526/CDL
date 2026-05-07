@@ -9,8 +9,8 @@ import { ROUTES } from '../../utils/constants'
 
 function WishlistPage() {
   const dispatch = useDispatch()
-  const { items, loading } = useSelector((state) => state.wishlist)
-  const products = items.map((item) => item.product)
+  const { items, loading, error } = useSelector((state) => state.wishlist)
+  const products = items.map((item) => item.product).filter(Boolean)
 
   useEffect(() => {
     dispatch(loadWishlist())
@@ -20,6 +20,12 @@ function WishlistPage() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">Saved artworks</h1>
       <p className="mt-1 text-gray-500">Paintings you want to revisit or purchase later</p>
+
+      {error && (
+        <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          {typeof error === 'string' ? error : error.detail || 'Could not load wishlist.'}
+        </p>
+      )}
 
       {loading && <LoadingSpinner />}
       {!loading && products.length === 0 && (

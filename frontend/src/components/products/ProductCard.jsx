@@ -1,7 +1,10 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsAuthenticated } from '../../redux/auth/authSlice'
-import { toggleWishlistItem, selectIsInWishlist } from '../../redux/wishlist/wishlistSlice'
+import {
+  toggleWishlistItem,
+  selectIsInWishlist,
+} from '../../redux/wishlist/wishlistSlice'
 import { addCartItem, selectIsInCart } from '../../redux/cart/cartSlice'
 import {
   ROUTES,
@@ -12,20 +15,24 @@ import StarRating from '../common/StarRating'
 
 function ProductCard({ product }) {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const inWishlist = useSelector(selectIsInWishlist(product.id))
+  const wishlistToggling = useSelector(
+    (state) => state.wishlist.togglingId === product.id,
+  )
   const inCart = useSelector(selectIsInCart(product.id))
   const adding = useSelector((state) => state.cart.adding)
   const image = resolveMediaUrl(product.primary_image)
 
-  const handleWishlist = (e) => {
+  const handleWishlist = async (e) => {
     e.preventDefault()
     e.stopPropagation()
     if (!isAuthenticated) {
-      window.location.href = ROUTES.LOGIN
+      navigate(ROUTES.LOGIN)
       return
     }
-    dispatch(toggleWishlistItem(product.id))
+    await dispatch(toggleWishlistItem(product.id))
   }
 
   const handleAddToCart = (e) => {
@@ -58,12 +65,14 @@ function ProductCard({ product }) {
         <button
           type="button"
           onClick={handleWishlist}
-          className={`absolute right-2 top-2 z-10 rounded-full border bg-white/95 p-2 text-sm shadow-sm backdrop-blur-sm ${
+          disabled={wishlistToggling}
+          className={`absolute right-2 top-2 z-10 rounded-full border bg-white/95 p-2 text-lg leading-none shadow-sm backdrop-blur-sm transition ${
             inWishlist
-              ? 'border-red-200 text-red-600'
-              : 'border-stone-200 text-stone-600 hover:border-amber-500 hover:text-amber-800'
-          }`}
-          aria-label="Save to wishlist"
+              ? 'border-red-300 bg-red-50 text-red-600'
+              : 'border-stone-200 text-stone-500 hover:border-red-200 hover:text-red-500'
+          } disabled:opacity-60`}
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-pressed={inWishlist}
         >
           {inWishlist ? '♥' : '♡'}
         </button>
