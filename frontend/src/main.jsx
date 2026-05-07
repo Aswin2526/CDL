@@ -7,7 +7,7 @@ import { router } from './routes/router.jsx'
 import { store } from './redux/store/index.js'
 import { initializeAuth, selectIsAuthenticated } from './redux/auth/authSlice'
 import { loadCart, resetCart } from './redux/cart/cartSlice'
-import { loadWishlist } from './redux/wishlist/wishlistSlice'
+import { loadWishlist, resetWishlist } from './redux/wishlist/wishlistSlice'
 function AuthBootstrap({ children }) {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -22,6 +22,7 @@ function AuthBootstrap({ children }) {
       dispatch(loadWishlist())
     } else {
       dispatch(resetCart())
+      dispatch(resetWishlist())
     }
   }, [dispatch, isAuthenticated])
 

@@ -15,9 +15,10 @@ export const loadWishlist = createAsyncThunk(
 
 export const toggleWishlistItem = createAsyncThunk(
   'wishlist/toggle',
-  async (productId, { rejectWithValue }) => {
+  async (productId, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await productService.toggleWishlist(productId)
+      await dispatch(loadWishlist())
       return { productId, ...data }
     } catch (err) {
       return rejectWithValue(err.response?.data)
@@ -37,6 +38,11 @@ const wishlistSlice = createSlice({
     setWishlistIds(state, action) {
       state.ids = action.payload
     },
+    resetWishlist(state) {
+      state.items = []
+      state.ids = []
+      state.error = null
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -51,20 +57,21 @@ const wishlistSlice = createSlice({
       .addCase(loadWishlist.rejected, (state) => {
         state.loading = false
       })
-      .addCase(toggleWishlistItem.fulfilled, (state, action) => {
-        const { productId, in_wishlist } = action.payload
-        if (in_wishlist) {
-          if (!state.ids.includes(productId)) state.ids.push(productId)
-        } else {
-          state.ids = state.ids.filter((id) => id !== productId)
-          state.items = state.items.filter((item) => item.product.id !== productId)
-        }
+      .addCase(toggleWishlistItem.pending, (state) => {
+        state.error = null
+      })
+      .addCase(toggleWishlistItem.fulfilled, (state) => {
+        // loadWishlist runs in the thunk; fulfilled state comes from that chain
+      })
+      .addCase(toggleWishlistItem.rejected, (state, action) => {
+        state.error = action.payload?.detail || 'Wishlist update failed.'
       })
   },
 })
 
-export const { setWishlistIds } = wishlistSlice.actions
+export const { setWishlistIds, resetWishlist } = wishlistSlice.actions
 export const selectIsInWishlist = (productId) => (state) =>
   state.wishlist.ids.includes(productId)
+export const selectWishlistCount = (state) => state.wishlist.ids.length
 
 export default wishlistSlice.reducer

@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, selectAuth, selectIsAuthenticated } from '../../redux/auth/authSlice'
 import { selectCartItemCount } from '../../redux/cart/cartSlice'
+import { selectWishlistCount } from '../../redux/wishlist/wishlistSlice'
 import SearchBar from '../filters/SearchBar'
 import { APP_NAME, ROUTES } from '../../utils/constants'
 
@@ -11,6 +12,7 @@ function Navbar() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const { user } = useSelector(selectAuth)
   const cartCount = useSelector(selectCartItemCount)
+  const wishlistCount = useSelector(selectWishlistCount)
 
   const handleLogout = async () => {
     await dispatch(logout())
@@ -35,7 +37,12 @@ function Navbar() {
                     <Link to={ROUTES.CART}>Cart{cartCount > 0 ? ` (${cartCount})` : ''}</Link>
                   </li>
                   <li>
-                    <Link to={ROUTES.WISHLIST}>♥</Link>
+                    <Link
+                      to={ROUTES.WISHLIST}
+                      className={wishlistCount > 0 ? 'text-red-600' : ''}
+                    >
+                      ♥{wishlistCount > 0 ? ` (${wishlistCount})` : ''}
+                    </Link>
                   </li>
                   {user?.role === 'customer' && (
                     <li>
@@ -89,8 +96,18 @@ function Navbar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to={ROUTES.WISHLIST} className="hover:text-amber-700">
+                  <Link
+                    to={ROUTES.WISHLIST}
+                    className={`hover:text-amber-700 ${
+                      wishlistCount > 0 ? 'text-red-600' : ''
+                    }`}
+                  >
                     Wishlist
+                    {wishlistCount > 0 && (
+                      <span className="ml-1 rounded-full bg-red-500 px-1.5 py-0.5 text-xs text-white">
+                        {wishlistCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
               </>
