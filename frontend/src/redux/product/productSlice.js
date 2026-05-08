@@ -37,6 +37,20 @@ export const loadCategories = createAsyncThunk(
   },
 )
 
+/** Total active paintings in the gallery (unfiltered). */
+export const loadGalleryTotalCount = createAsyncThunk(
+  'products/loadGalleryTotal',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await productService.fetchProducts({ page: 1 })
+      const list = data.results ?? data
+      return data.count ?? list.length
+    } catch (err) {
+      return rejectWithValue(err.response?.data)
+    }
+  },
+)
+
 export const loadHomeData = createAsyncThunk(
   'products/loadHome',
   async (_, { rejectWithValue }) => {
@@ -62,6 +76,7 @@ const productSlice = createSlice({
   initialState: {
     list: [],
     listCount: 0,
+    totalAvailable: 0,
     listLoading: false,
     listError: null,
     detail: null,
@@ -128,6 +143,9 @@ const productSlice = createSlice({
       })
       .addCase(loadCategories.fulfilled, (state, action) => {
         state.categories = action.payload.results ?? action.payload
+      })
+      .addCase(loadGalleryTotalCount.fulfilled, (state, action) => {
+        state.totalAvailable = action.payload
       })
       .addCase(loadHomeData.pending, (state) => {
         state.homeLoading = true

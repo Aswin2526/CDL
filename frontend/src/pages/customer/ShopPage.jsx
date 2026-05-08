@@ -9,6 +9,7 @@ import EmptyState from '../../components/common/EmptyState'
 import {
   loadProducts,
   loadCategories,
+  loadGalleryTotalCount,
   setFilters,
   resetFilters,
 } from '../../redux/product/productSlice'
@@ -19,7 +20,7 @@ function ShopPage() {
   const dispatch = useDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
   const isAuthenticated = useSelector(selectIsAuthenticated)
-  const { list, listCount, listLoading, listError, categories, filters } =
+  const { list, listCount, totalAvailable, listLoading, listError, categories, filters } =
     useSelector((state) => state.products)
 
   const buildParams = useCallback(() => {
@@ -50,6 +51,7 @@ function ShopPage() {
 
   useEffect(() => {
     dispatch(loadCategories())
+    dispatch(loadGalleryTotalCount())
     if (isAuthenticated) dispatch(loadWishlist())
   }, [dispatch, isAuthenticated])
 
@@ -75,8 +77,8 @@ function ShopPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">Gallery</h1>
         <p className="mt-1 text-gray-500">
-          {listCount > 0
-            ? `${listCount} painting${listCount !== 1 ? 's' : ''} available`
+          {totalAvailable > 0
+            ? `${totalAvailable} painting${totalAvailable !== 1 ? 's' : ''} available`
             : 'Browse original artworks from our gallery'}
         </p>
       </div>
@@ -95,7 +97,8 @@ function ShopPage() {
         <div className="min-w-0 flex-1">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-gray-600">
-              Showing {list.length} artwork{list.length !== 1 ? 's' : ''}
+              Showing {listCount > 0 ? listCount : list.length} artwork
+              {(listCount > 0 ? listCount : list.length) !== 1 ? 's' : ''}
             </p>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Sort:</span>
