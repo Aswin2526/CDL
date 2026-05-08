@@ -37,11 +37,8 @@ function Navbar() {
                     <Link to={ROUTES.CART}>Cart{cartCount > 0 ? ` (${cartCount})` : ''}</Link>
                   </li>
                   <li>
-                    <Link
-                      to={ROUTES.WISHLIST}
-                      className={wishlistCount > 0 ? 'text-red-600' : ''}
-                    >
-                      ♥{wishlistCount > 0 ? ` (${wishlistCount})` : ''}
+                    <Link to={ROUTES.WISHLIST}>
+                      Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}
                     </Link>
                   </li>
                   {user?.role === 'customer' && (
@@ -96,15 +93,10 @@ function Navbar() {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to={ROUTES.WISHLIST}
-                    className={`hover:text-amber-700 ${
-                      wishlistCount > 0 ? 'text-red-600' : ''
-                    }`}
-                  >
+                  <Link to={ROUTES.WISHLIST} className="hover:text-amber-700">
                     Wishlist
                     {wishlistCount > 0 && (
-                      <span className="ml-1 rounded-full bg-red-500 px-1.5 py-0.5 text-xs text-white">
+                      <span className="ml-1 rounded-full bg-amber-600 px-1.5 py-0.5 text-xs text-white">
                         {wishlistCount}
                       </span>
                     )}
