@@ -18,21 +18,39 @@ REFERENCE_LOCAL: dict[str, str] = {
     "gaun-ko-ghar-bagaicha": "ghar-bagaicha-landscape.png",
     "charcoal-gaun-ko-bato": "charcoal-gaon-bato.png",
     "kala-safed-fashion-portrait": "fashion-portrait-black-white.png",
+    "shishir-himal-ra-pul": "shishir-himal-ra-pul.png",
+    "himshanti-taal": "himshanti-taal.png",
+    "sakura-sanjhama-himal": "sakura-sanjhama-himal.png",
+    "neelo-ghar-ko-bato": "neelo-ghar-ko-bato.png",
+    "suryodayako-bato": "suryodayako-bato.png",
+    "pataley-chhango": "pataley-chhango.png",
+    "antarman-ko-jhalak": "antarman-ko-jhalak.png",
+    "suryodaya-sundari": "suryodaya-sundari.png",
+    "seto-lace-ko-keti": "seto-lace-ko-keti.png",
+    "nischal-herai": "nischal-herai.png",
+    "ujyalo-muskan": "ujyalo-muskan.png",
 }
+
+# Replaced landscape listings (removed on seed)
+RETIRED_LANDSCAPE_SLUGS = (
+    "phewa-tal-bihani",
+    "gaaun-ko-bato",
+    "himal-ko-bhor",
+    "fulbari-sanjha",
+    "terai-khet-hari",
+    "koshi-nadiko-kinara",
+)
+
+RETIRED_PORTRAIT_SLUGS = (
+    "neta-ko-nayan-blue-eye-portrait",
+    "bhadragol-sundar-akhi",
+    "rato-oth-ko-roop",
+    "pahadi-naari-portrait",
+    "buwa-ko-muhar",
+)
 
 # One unique Picsum photo ID per slug — no duplicates in the gallery
 SLUG_TO_PICSUM_ID: dict[str, int] = {
-    "neta-ko-nayan-blue-eye-portrait": 1011,
-    "bhadragol-sundar-akhi": 1005,
-    "rato-oth-ko-roop": 1027,
-    "pahadi-naari-portrait": 1062,
-    "buwa-ko-muhar": 1074,
-    "phewa-tal-bihani": 15,
-    "gaaun-ko-bato": 29,
-    "himal-ko-bhor": 37,
-    "fulbari-sanjha": 64,
-    "terai-khet-hari": 96,
-    "koshi-nadiko-kinara": 119,
     "rangeen-sapana": 175,
     "naya-bihani-rang": 180,
     "rang-ko-khel": 213,

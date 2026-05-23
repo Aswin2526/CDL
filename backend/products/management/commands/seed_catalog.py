@@ -9,7 +9,11 @@ from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
-from products.catalog_images import attach_images_for_all_products
+from products.catalog_images import (
+    RETIRED_LANDSCAPE_SLUGS,
+    RETIRED_PORTRAIT_SLUGS,
+    attach_images_for_all_products,
+)
 from products.models import Category, PaintingMedium, Product, StoreSettings
 
 
@@ -82,39 +86,39 @@ class Command(BaseCommand):
         paintings = [
             # ── Portrait ──────────────────────────────────────────────
             (
-                "Neta Ko Nayan — Blue Eye Portrait",
-                "Portrait", "38000.00", 1, True, 4.9, 21,
-                "Sunita Rai", O, "24 × 30 in", True, 2024,
-                "A stunning oil portrait capturing piercing blue eyes framed by "
-                "white daisies — inspired by the delicate beauty of Nepali hill women.",
+                "Antarman ko Jhalak",
+                "Portrait", "18500.00", 1, True, 4.8, 19,
+                "Roshan Pradhan", O, "20 × 24 in", True, 2024,
+                "A soulful oil portrait — quiet reflection in soft light, "
+                "delicate lace and a wistful gaze against a deep moody ground.",
             ),
             (
-                "Bhadragol Sundar Akhi",
-                "Portrait", "29500.00", 1, True, 4.8, 16,
-                "Sunita Rai", O, "20 × 24 in", True, 2023,
-                "Soft golden light falls on a young woman's gaze, evoking the "
-                "timeless grace found in classical Newari portraiture.",
+                "Suryodaya Sundari",
+                "Portrait", "35000.00", 1, True, 4.9, 24,
+                "Binod Shrestha", O, "24 × 30 in", True, 2024,
+                "Bold contemporary portrait — radiant afro, peacock feathers "
+                "and warm sunset light on confident, serene features.",
             ),
             (
-                "Rato Oth Ko Roop",
-                "Portrait", "34000.00", 1, False, 4.7, 12,
-                "Maya Thapa", O, "24 × 24 in", False, 2023,
-                "Bold contrast of a monochrome figure against stark white — "
-                "a contemporary take on Nepali feminine elegance with crimson lips.",
+                "Seto Lace ko Keti",
+                "Portrait", "32000.00", 1, True, 4.8, 17,
+                "Asha Dangol", O, "22 × 28 in", True, 2023,
+                "Classical portrait of a young woman in an intricate white lace "
+                "gown — fine detail and timeless elegance on a dark ground.",
             ),
             (
-                "Pahadi Naari Portrait",
-                "Portrait", "27000.00", 1, False, 4.6, 9,
-                "Sunita Rai", WC, "18 × 22 in", False, 2022,
-                "Delicate watercolor capturing a hill woman reading a letter "
-                "by the window — quiet solitude in soft morning light.",
+                "Nischal Herai",
+                "Portrait", "16500.00", 1, False, 4.7, 12,
+                "Suman Shrestha", O, "18 × 22 in", False, 2023,
+                "Contemplative seated portrait — navy shawl over a vivid orange "
+                "dress, crossed arms and a direct, soulful gaze.",
             ),
             (
-                "Buwa Ko Muhar",
-                "Portrait", "22500.00", 1, False, 4.5, 7,
-                "Rajan Gurung", O, "16 × 20 in", True, 2021,
-                "A moving self-portrait study in oil — textured brushwork "
-                "reflecting the depth and dignity of an elder Nepali face.",
+                "Ujyalo Muskan",
+                "Portrait", "22000.00", 1, False, 4.8, 15,
+                "Sagar Thapa", AC, "20 × 26 in", False, 2024,
+                "Luminous contemporary portrait — sun-kissed skin, flowing hair "
+                "and sparkling light in a soft, natural setting.",
             ),
 
             # ── Original hand-drawn paintings for sale (local reference art) ──
@@ -205,46 +209,46 @@ class Command(BaseCommand):
 
             # ── Landscape ─────────────────────────────────────────────
             (
-                "Phewa Tal Bihani",
-                "Landscape", "32000.00", 1, True, 4.9, 24,
-                "Maya Thapa", O, "30 × 40 in", True, 2024,
-                "Golden dawn light on Phewa Lake, Pokhara — misty reflections "
-                "of the Annapurna range in still water.",
+                "Shishir Himal ra Pul",
+                "Landscape", "28500.00", 1, True, 4.9, 22,
+                "Dipak Rana", O, "24 × 36 in", True, 2024,
+                "Snow peak above an autumn forest — golden larch and birch "
+                "frame a stone bridge over a calm mountain river.",
             ),
             (
-                "Gaaun Ko Bato",
-                "Landscape", "26500.00", 1, True, 4.7, 15,
-                "Maya Thapa", AC, "24 × 36 in", False, 2023,
-                "A winding dirt path through a Nepali village in full monsoon "
-                "green — warm dusk light over thatched rooftops.",
+                "Himshanti Taal",
+                "Landscape", "18500.00", 1, True, 4.8, 18,
+                "Ramesh Shrestha", O, "30 × 40 in", True, 2024,
+                "A stag on a rocky shore at dawn — still alpine lake and "
+                "snow-capped peak reflected in cool morning light.",
             ),
             (
-                "Himal Ko Bhor",
-                "Landscape", "42000.00", 1, True, 5.0, 30,
-                "Rajan Gurung", O, "36 × 48 in", True, 2024,
-                "Sweeping Himalayan panorama at dawn — cobalt sky fading to "
-                "rose gold above snow-capped Annapurna peaks.",
+                "Sakura Sanjhama Himal",
+                "Landscape", "12500.00", 1, False, 4.7, 14,
+                "Arpan Rajbhandari", AC, "20 × 28 in", False, 2023,
+                "Cherry blossoms along a lakeside at sunset — distant Himalayan "
+                "silhouette and arched bridge mirrored in warm pink water.",
             ),
             (
-                "Fulbari Sanjha",
-                "Landscape", "19500.00", 1, False, 4.5, 8,
-                "Maya Thapa", WC, "18 × 24 in", False, 2022,
-                "A lush garden at twilight with blooming rhododendrons reflected "
-                "in a still pond — impressionistic and serene.",
+                "Neelo Ghar ko Bato",
+                "Landscape", "9800.00", 1, False, 4.6, 9,
+                "Arjun Prajapati", AC, "18 × 24 in", False, 2022,
+                "A blue cottage on rolling hills — folk-art colour and a winding "
+                "path through terracotta rocks under a soft evening sky.",
             ),
             (
-                "Terai Khet Hari",
-                "Landscape", "23000.00", 1, False, 4.6, 10,
-                "Anil Karki", O, "24 × 32 in", True, 2022,
-                "Vast golden paddy fields of the Terai plains under dramatic "
-                "monsoon clouds — a celebration of Nepal's breadbasket.",
+                "Suryodayako Bato",
+                "Landscape", "15200.00", 1, False, 4.7, 11,
+                "Saraswati Khatri", O, "24 × 30 in", True, 2024,
+                "A winding village path at sunrise — bold brushwork, cypress "
+                "trees and a cream cottage beneath a swirling golden sky.",
             ),
             (
-                "Koshi Nadiko Kinara",
-                "Landscape", "28000.00", 1, False, 4.4, 7,
-                "Rajan Gurung", AC, "22 × 30 in", False, 2021,
-                "Shimmering light on the Koshi River — fishermen on bamboo rafts "
-                "against a backdrop of forest and distant hills.",
+                "Pataley Chhango",
+                "Landscape", "35000.00", 1, True, 5.0, 26,
+                "Bishnu Prasad Lamichhane", O, "36 × 48 in", True, 2023,
+                "A tiered waterfall in a green valley — classical landscape "
+                "with grazing cattle and distant hills in soft morning air.",
             ),
 
             # ── Abstract ──────────────────────────────────────────────
@@ -415,6 +419,12 @@ class Command(BaseCommand):
             )
             status = "+" if created else "~"
             self.stdout.write(f"  {status} {product.name}")
+
+        removed, _ = Product.objects.filter(
+            slug__in=(*RETIRED_LANDSCAPE_SLUGS, *RETIRED_PORTRAIT_SLUGS)
+        ).delete()
+        if removed:
+            self.stdout.write(self.style.WARNING(f"  - removed {removed} retired listing(s)"))
 
         if not options.get("skip_images"):
             self.stdout.write("Downloading painting images...")
