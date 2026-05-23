@@ -92,11 +92,11 @@ function ProductDetailPage() {
 
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
-          <div className="aspect-[4/5] overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+          <div className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-xl border border-stone-200 bg-stone-100 lg:min-h-[520px]">
             <img
               src={images[activeImage]}
               alt={detail.name}
-              className="h-full w-full object-cover"
+              className="max-h-[min(70vh,640px)] w-full object-contain"
             />
           </div>
           {images.length > 1 && (
@@ -110,7 +110,7 @@ function ProductDetailPage() {
                     activeImage === i ? 'border-amber-600' : 'border-stone-200'
                   }`}
                 >
-                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <img src={src} alt="" className="h-full w-full object-contain bg-stone-100" />
                 </button>
               ))}
             </div>

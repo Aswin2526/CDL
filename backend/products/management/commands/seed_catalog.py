@@ -13,6 +13,7 @@ from products.catalog_images import (
     RETIRED_ABSTRACT_SLUGS,
     RETIRED_COLOR_PAINTINGS_SLUGS,
     RETIRED_PENCIL_PAINTINGS_SLUGS,
+    RETIRED_ORIGINAL_PAINTINGS_SLUGS,
     RETIRED_CONTEMPORARY_SLUGS,
     RETIRED_LANDSCAPE_SLUGS,
     RETIRED_PORTRAIT_SLUGS,
@@ -65,9 +66,9 @@ class Command(BaseCommand):
             ("Color Paintings", "Original full-color oil, acrylic and watercolor works"),
             ("Pencil Paintings","Graphite, charcoal and pencil drawings"),
             (
-                "Original Drawings",
-                "One-of-a-kind hand-drawn originals — pencil, charcoal and ink. "
-                "Each piece is a single original artwork ready to ship.",
+                "Original Paintings",
+                "Iconic masterpieces — original titles, artists and worldwide "
+                "market reference values (museum-grade reproductions listed).",
             ),
         ]
         cats = {}
@@ -126,90 +127,62 @@ class Command(BaseCommand):
                 "and sparkling light in a soft, natural setting.",
             ),
 
-            # ── Original hand-drawn paintings for sale (local reference art) ──
+            # ── Original Paintings (worldwide masterpieces) ─────────────────
             (
-                "Nilo Nayan — Phoolbhitra",
-                "Original Drawings", "36000.00", 1, True, 4.9, 5,
-                "Sunita Rai", PC, "24 × 30 in", True, 2024,
-                "ORIGINAL FOR SALE — Hand-drawn color portrait with blue eyes and "
-                "white blossoms. Single piece on archival paper; certificate included.",
+                "Mona Lisa (La Gioconda)",
+                "Original Paintings", "99999999.99", 1, True, 5.0, 48,
+                "Leonardo da Vinci", O, "30 × 21 in", True, 1503,
+                "Worldwide market reference: priceless (Louvre); insurance estimates "
+                "exceed USD 900 million. Renaissance oil on poplar panel.",
             ),
             (
-                "Gaun Ko Ghar Bagaicha",
-                "Original Drawings", "28000.00", 1, True, 4.8, 4,
-                "Maya Thapa", AC, "24 × 30 in", True, 2024,
-                "ORIGINAL FOR SALE — Acrylic landscape of a countryside home and "
-                "meadow. Painted by hand; only one copy exists.",
+                "The Starry Night",
+                "Original Paintings", "99999999.99", 1, True, 5.0, 52,
+                "Vincent van Gogh", O, "29 × 36 in", True, 1889,
+                "Worldwide market reference: priceless (MoMA); comparable Van Gogh "
+                "works have exceeded USD 80 million at auction.",
             ),
             (
-                "Charcoal Gaun Ko Bato",
-                "Original Drawings", "15000.00", 1, True, 4.7, 3,
-                "Rajan Gurung", PC, "18 × 24 in", False, 2024,
-                "ORIGINAL FOR SALE — Charcoal drawing of a misty village path. "
-                "Signed original; ships rolled or flat-packed.",
+                "Girl with a Pearl Earring",
+                "Original Paintings", "99999999.99", 1, True, 5.0, 41,
+                "Johannes Vermeer", O, "17 × 15 in", True, 1665,
+                "Worldwide market reference: estimated USD 300–500 million if sold "
+                "(Mauritshuis). Dutch Golden Age oil tronie.",
             ),
             (
-                "Kala Safed Fashion Portrait",
-                "Original Drawings", "32000.00", 1, True, 4.8, 3,
-                "Sunita Rai", MX, "20 × 24 in", False, 2024,
-                "ORIGINAL FOR SALE — Ink and wash fashion portrait with bold pink "
-                "lips. Hand-painted original, not a print.",
+                "The Creation of Adam",
+                "Original Paintings", "99999999.99", 1, True, 5.0, 55,
+                "Michelangelo", O, "280 × 570 in", False, 1512,
+                "Worldwide market reference: priceless (Sistine Chapel ceiling fresco). "
+                "Central panel of Renaissance masterpiece cycle.",
             ),
             (
-                "Hathle Baneko Gurans",
-                "Original Drawings", "14500.00", 1, True, 4.8, 6,
-                "Anil Karki", PC, "14 × 18 in", False, 2024,
-                "ORIGINAL FOR SALE — Pencil study of rhododendron branches drawn "
-                "from life in Ghorepani. One piece only.",
+                "Portrait of Leonardo da Vinci",
+                "Original Paintings", "99999999.99", 1, True, 4.9, 38,
+                "Leonardo da Vinci", O, "13 × 10 in", True, 1512,
+                "Worldwide market reference: priceless (Royal Library of Turin); "
+                "Leonardo's Salvator Mundi sold for USD 450 million in 2017.",
             ),
             (
-                "Kathmandu Durbar Charcoal",
-                "Original Drawings", "18500.00", 1, False, 4.7, 4,
-                "Rajan Gurung", PC, "16 × 20 in", True, 2023,
-                "ORIGINAL FOR SALE — Charcoal sketch of temple woodwork and "
-                "courtyard shadows at Kathmandu Durbar Square.",
+                "The Great Wave off Kanagawa",
+                "Original Paintings", "1450000.00", 1, True, 4.9, 35,
+                "Katsushika Hokusai", MX, "10 × 15 in", False, 1831,
+                "Worldwide market reference: exceptional original impressions "
+                "USD 0.5–1.5 million at auction. Ukiyo-e woodblock print.",
             ),
             (
-                "Pokhara Lake Graphite Original",
-                "Original Drawings", "16800.00", 1, False, 4.6, 5,
-                "Maya Thapa", PC, "18 × 24 in", False, 2024,
-                "ORIGINAL FOR SALE — Graphite lakeside drawing with Annapurna "
-                "reflections. Hand-finished tonal work.",
+                "Starry Night Over the Rhône",
+                "Original Paintings", "99999999.99", 1, True, 5.0, 44,
+                "Vincent van Gogh", O, "28 × 36 in", True, 1888,
+                "Worldwide market reference: priceless (Musée d'Orsay); comparable "
+                "major Van Gogh paintings exceed USD 80 million.",
             ),
             (
-                "Baal Sain Charcoal Portrait",
-                "Original Drawings", "22000.00", 1, True, 4.9, 7,
-                "Sunita Rai", PC, "18 × 22 in", True, 2024,
-                "ORIGINAL FOR SALE — Charcoal child portrait with soft highlights. "
-                "Drawn from a live sitting in Pokhara.",
-            ),
-            (
-                "Dhaka Topi Wala Sketch",
-                "Original Drawings", "12500.00", 1, False, 4.5, 3,
-                "Anil Karki", PC, "12 × 16 in", False, 2023,
-                "ORIGINAL FOR SALE — Quick pencil sketch of an elder in traditional "
-                "dhaka topi. Authentic hill-culture study.",
-            ),
-            (
-                "Prayer Flag Ridge Drawing",
-                "Original Drawings", "19500.00", 1, False, 4.7, 4,
-                "Rajan Gurung", PC, "20 × 26 in", True, 2023,
-                "ORIGINAL FOR SALE — Pencil and charcoal ridge line with fluttering "
-                "prayer flags. Original Himalayan scene.",
-            ),
-            (
-                "Sadak Ko Kukur — Pencil",
-                "Original Drawings", "9800.00", 1, False, 4.4, 2,
-                "Maya Thapa", PC, "11 × 14 in", False, 2022,
-                "ORIGINAL FOR SALE — Street dog resting on a Kathmandu lane, drawn "
-                "in graphite. Affordable original art.",
-            ),
-            (
-                "Monsoon Khola Charcoal",
-                "Original Drawings", "17200.00", 1, False, 4.6, 5,
-                "Anil Karki", PC, "18 × 24 in", False, 2024,
-                "ORIGINAL FOR SALE — Charcoal stream scene after monsoon rain. "
-                "Textured paper, signed by artist.",
+                "The Scream",
+                "Original Paintings", "99999999.99", 1, True, 5.0, 47,
+                "Edvard Munch", MX, "36 × 29 in", True, 1893,
+                "Worldwide market reference: USD 119.9 million (Sotheby's 2012, "
+                "pastel version). Icon of Expressionism.",
             ),
 
             # ── Landscape ─────────────────────────────────────────────
@@ -478,10 +451,13 @@ class Command(BaseCommand):
                 *RETIRED_CONTEMPORARY_SLUGS,
                 *RETIRED_COLOR_PAINTINGS_SLUGS,
                 *RETIRED_PENCIL_PAINTINGS_SLUGS,
+                *RETIRED_ORIGINAL_PAINTINGS_SLUGS,
             )
         ).delete()
         if removed:
             self.stdout.write(self.style.WARNING(f"  - removed {removed} retired listing(s)"))
+
+        Category.objects.filter(slug="original-drawings").delete()
 
         if not options.get("skip_images"):
             self.stdout.write("Downloading painting images...")

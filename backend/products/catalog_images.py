@@ -14,10 +14,14 @@ from django.core.files.base import ContentFile
 SEED_IMAGES_DIR = Path(__file__).resolve().parent.parent / "seed_images"
 
 REFERENCE_LOCAL: dict[str, str] = {
-    "nilo-nayan-phoolbhitra": "nayan-nilo-ankha.png",
-    "gaun-ko-ghar-bagaicha": "ghar-bagaicha-landscape.png",
-    "charcoal-gaun-ko-bato": "charcoal-gaon-bato.png",
-    "kala-safed-fashion-portrait": "fashion-portrait-black-white.png",
+    "mona-lisa-la-gioconda": "mona-lisa-la-gioconda.png",
+    "the-starry-night": "the-starry-night.png",
+    "girl-with-a-pearl-earring": "girl-with-a-pearl-earring.png",
+    "the-creation-of-adam": "the-creation-of-adam.png",
+    "portrait-of-leonardo-da-vinci": "portrait-of-leonardo-da-vinci.png",
+    "the-great-wave-off-kanagawa": "the-great-wave-off-kanagawa.png",
+    "starry-night-over-the-rhone": "starry-night-over-the-rhone.png",
+    "the-scream": "the-scream.png",
     "shishir-himal-ra-pul": "shishir-himal-ra-pul.png",
     "himshanti-taal": "himshanti-taal.png",
     "sakura-sanjhama-himal": "sakura-sanjhama-himal.png",
@@ -95,6 +99,21 @@ RETIRED_COLOR_PAINTINGS_SLUGS = (
     "taal-ko-rang",
     "holi-ko-khushi",
     "parijat-phul",
+)
+
+RETIRED_ORIGINAL_PAINTINGS_SLUGS = (
+    "nilo-nayan-phoolbhitra",
+    "gaun-ko-ghar-bagaicha",
+    "charcoal-gaun-ko-bato",
+    "kala-safed-fashion-portrait",
+    "hathle-baneko-gurans",
+    "kathmandu-durbar-charcoal",
+    "pokhara-lake-graphite-original",
+    "baal-sain-charcoal-portrait",
+    "dhaka-topi-wala-sketch",
+    "prayer-flag-ridge-drawing",
+    "sadak-ko-kukur-pencil",
+    "monsoon-khola-charcoal",
 )
 
 RETIRED_PENCIL_PAINTINGS_SLUGS = (

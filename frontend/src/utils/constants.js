@@ -45,7 +45,7 @@ export const CATEGORY_ICONS = {
   contemporary: '✨',
   'color-paintings': '🖌️',
   'pencil-paintings': '✏️',
-  'original-drawings': '🖼️',
+  'original-paintings': '🖼️',
 }
 
 export const PLACEHOLDER_IMAGE =

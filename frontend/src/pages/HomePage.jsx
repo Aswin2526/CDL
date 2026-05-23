@@ -38,7 +38,7 @@ function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to={`${ROUTES.SHOP}?category=original-drawings`}
+                to={`${ROUTES.SHOP}?category=original-paintings`}
                 className="rounded-lg bg-amber-500 px-6 py-3 font-semibold text-stone-900 shadow hover:bg-amber-400"
               >
                 Shop originals

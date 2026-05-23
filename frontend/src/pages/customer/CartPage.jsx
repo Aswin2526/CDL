@@ -121,7 +121,7 @@ function CartPage() {
                     to={`${ROUTES.PRODUCT}/${p.slug}`}
                     className="h-28 w-24 shrink-0 overflow-hidden rounded-lg bg-stone-100"
                   >
-                    <img src={image} alt={p.name} className="h-full w-full object-cover" />
+                    <img src={image} alt={p.name} className="h-full w-full object-contain bg-stone-100" />
                   </Link>
                   <div className="min-w-0 flex-1">
                     <Link
