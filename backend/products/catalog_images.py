@@ -29,6 +29,31 @@ REFERENCE_LOCAL: dict[str, str] = {
     "seto-lace-ko-keti": "seto-lace-ko-keti.png",
     "nischal-herai": "nischal-herai.png",
     "ujyalo-muskan": "ujyalo-muskan.png",
+    "barkha-ko-rang": "barkha-ko-rang.png",
+    "antardwanda": "antardwanda.png",
+    "kala-chakra": "kala-chakra.png",
+    "indreni-aankha": "indreni-aankha.png",
+    "kiriko-jwalo": "kiriko-jwalo.png",
+    "pustak-ra-suntala": "pustak-ra-suntala.png",
+    "falharu-ko-jhund": "falharu-ko-jhund.png",
+    "jeevan-ko-sandesh": "jeevan-ko-sandesh.png",
+    "phoolharu-ko-guchchha": "phoolharu-ko-guchchha.png",
+    "bhansa-kotha-still-life": "bhansa-kotha-still-life.png",
+    "bada-khutta-ra-surya": "bada-khutta-surya.png",
+    "poolside-dui-roop": "poolside-dui-roop.png",
+    "sochko-dhara": "sochko-dhara.png",
+    "rato-kursi-ma-aram": "rato-kursi-aram.png",
+    "jwan-ko-chhaya": "jwan-ko-chhaya.png",
+    "rangin-singhako-muhar": "rangin-singhako-muhar.png",
+    "mayur-ra-rajkumari": "mayur-ra-rajkumari.png",
+    "suryasta-ra-rukh": "suryasta-ra-rukh.png",
+    "rangin-barishma-paila": "rangin-barishma-paila.png",
+    "rang-ko-anga": "rang-ko-anga.png",
+    "parekhuko-jhalak": "parekhuko-jhalak.png",
+    "bagh-ko-drishti": "bagh-ko-drishti.png",
+    "aankha-ra-haat": "aankha-ra-haat.png",
+    "shanti-taal-ra-ghar": "shanti-taal-ra-ghar.png",
+    "hatti-ko-muhar": "hatti-ko-muhar.png",
 }
 
 # Replaced landscape listings (removed on seed)
@@ -49,26 +74,42 @@ RETIRED_PORTRAIT_SLUGS = (
     "buwa-ko-muhar",
 )
 
+RETIRED_ABSTRACT_SLUGS = (
+    "rangeen-sapana",
+    "naya-bihani-rang",
+    "rang-ko-khel",
+)
+
+RETIRED_STILL_LIFE_SLUGS = (
+    "phool-ko-ful",
+    "bagaincha-ko-mewa",
+)
+
+# Legacy contemporary slugs (category was empty in seed; safe cleanup)
+RETIRED_CONTEMPORARY_SLUGS: tuple[str, ...] = ()
+
+RETIRED_COLOR_PAINTINGS_SLUGS = (
+    "lali-gurans-phuleko",
+    "indra-jatra-utsav",
+    "seto-machindranath-rath",
+    "taal-ko-rang",
+    "holi-ko-khushi",
+    "parijat-phul",
+)
+
+RETIRED_PENCIL_PAINTINGS_SLUGS = (
+    "charcoal-gaaun-saanjh",
+    "pencil-ko-pahaad",
+    "graphite-portrait-budha",
+    "raat-ko-bato-charcoal",
+    "aankhako-bhaav-sketch",
+    "mustang-dharahara-pencil",
+    "aakash-pencil-sketch",
+    "ghaam-pani-charcoal",
+)
+
 # One unique Picsum photo ID per slug — no duplicates in the gallery
 SLUG_TO_PICSUM_ID: dict[str, int] = {
-    "rangeen-sapana": 175,
-    "naya-bihani-rang": 180,
-    "rang-ko-khel": 213,
-    "phool-ko-ful": 225,
-    "bagaincha-ko-mewa": 287,
-    "lali-gurans-phuleko": 338,
-    "indra-jatra-utsav": 367,
-    "seto-machindranath-rath": 111,
-    "taal-ko-rang": 146,
-    "holi-ko-khushi": 152,
-    "parijat-phul": 1080,
-    "charcoal-gaaun-saanjh": 24,
-    "pencil-ko-pahaad": 48,
-    "graphite-portrait-budha": 52,
-    "raat-ko-bato-charcoal": 60,
-    "aankhako-bhaav-sketch": 106,
-    "mustang-dharahara-pencil": 250,
-    "aakash-pencil-sketch": 305,
     "ghaam-pani-charcoal": 366,
     "hathle-baneko-gurans": 433,
     "kathmandu-durbar-charcoal": 439,

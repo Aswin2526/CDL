@@ -10,8 +10,13 @@ from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
 from products.catalog_images import (
+    RETIRED_ABSTRACT_SLUGS,
+    RETIRED_COLOR_PAINTINGS_SLUGS,
+    RETIRED_PENCIL_PAINTINGS_SLUGS,
+    RETIRED_CONTEMPORARY_SLUGS,
     RETIRED_LANDSCAPE_SLUGS,
     RETIRED_PORTRAIT_SLUGS,
+    RETIRED_STILL_LIFE_SLUGS,
     attach_images_for_all_products,
 )
 from products.models import Category, PaintingMedium, Product, StoreSettings
@@ -253,143 +258,187 @@ class Command(BaseCommand):
 
             # ── Abstract ──────────────────────────────────────────────
             (
-                "Rangeen Sapana",
-                "Abstract", "35000.00", 1, True, 4.8, 18,
-                "Anil Karki", AC, "30 × 40 in", False, 2024,
-                "Swirling arcs of colour inspired by festival lights of Tihar — "
-                "joy and energy rendered in bold Kandinsky-esque form.",
+                "Barkha ko Rang",
+                "Abstract", "15500.00", 1, True, 4.8, 20,
+                "Suman Thapa", O, "24 × 30 in", True, 2024,
+                "Colourful umbrellas in the rain — thick impasto strokes and "
+                "reflections on a wet street in bold red, green and gold.",
             ),
             (
-                "Naya Bihani Rang",
-                "Abstract", "27500.00", 1, False, 4.6, 11,
-                "Anil Karki", AC, "24 × 30 in", False, 2023,
-                "Floral abstraction in warm ember tones — petals dissolving into "
-                "pure colour, celebrating the new dawn of spring.",
+                "Antardwanda",
+                "Abstract", "18500.00", 1, True, 4.9, 16,
+                "Kiran Chitrakar", O, "20 × 24 in", False, 2023,
+                "Raw expressionist portrait — fractured features in black, white "
+                "and crimson, conveying inner turmoil and psychological depth.",
             ),
             (
-                "Rang Ko Khel",
-                "Abstract", "31000.00", 1, False, 4.7, 13,
-                "Maya Thapa", MX, "28 × 36 in", True, 2023,
-                "Dynamic waves and spirals collide in deep indigo and gold — "
-                "a visual poem inspired by Himalayan river currents.",
+                "Kala Chakra",
+                "Abstract", "9200.00", 1, False, 4.6, 10,
+                "Siddhartha Tuladhar", AC, "22 × 28 in", True, 2024,
+                "Geometric abstraction — interlocking circles, squares and triangles "
+                "in primary red, yellow, blue and teal on a rhythmic grid.",
+            ),
+            (
+                "Indreni Aankha",
+                "Abstract", "18500.00", 1, False, 4.8, 14,
+                "Samipya Rajbhandari", AC, "30 × 40 in", False, 2024,
+                "A luminous rainbow iris — explosive colour, heavy texture and "
+                "paint splatter around a single intense, contemporary eye.",
+            ),
+            (
+                "Kiriko Jwalo",
+                "Abstract", "28500.00", 1, True, 4.7, 12,
+                "Suman Shrestha", O, "28 × 36 in", True, 2023,
+                "Misty forest greens parted by a horizontal band of fiery orange "
+                "and gold — atmospheric abstract landscape in bold brushwork.",
             ),
 
             # ── Still Life ────────────────────────────────────────────
             (
-                "Phool Ko Ful",
-                "Still Life", "18500.00", 1, False, 4.4, 8,
-                "Sunita Rai", O, "16 × 20 in", True, 2022,
-                "Sunflowers in a clay pot against warm ochre — "
-                "vibrant and joyful, echoing Nepali harvest festivals.",
+                "Pustak ra Suntala",
+                "Still Life", "22500.00", 1, True, 4.8, 14,
+                "Ramesh Poudel", O, "20 × 24 in", True, 2024,
+                "Old books and peeled oranges in dramatic chiaroscuro — "
+                "curling peel and worn spines in warm gold against deep shadow.",
             ),
             (
-                "Bagaincha Ko Mewa",
-                "Still Life", "21000.00", 1, False, 4.3, 6,
-                "Maya Thapa", WC, "18 × 24 in", False, 2021,
-                "Ripe mangoes and pomegranates spilling from a hand-woven dhaka "
-                "cloth — celebrating Nepal's seasonal abundance.",
+                "Falharu ko Jhund",
+                "Still Life", "16800.00", 1, False, 4.6, 9,
+                "Prakash Malla", O, "18 × 22 in", False, 2023,
+                "Pineapple, ripe bananas and a glossy apple on a dark ground — "
+                "classic fruit study with soft side light.",
+            ),
+            (
+                "Jeevan ko Sandesh",
+                "Still Life", "38500.00", 1, True, 4.9, 18,
+                "Gopal Manandhar", O, "22 × 28 in", True, 2023,
+                "Vanitas still life — skull, quill, inkwell and roemer glass "
+                "on aged pages, reminding us of life's fleeting nature.",
+            ),
+            (
+                "Phoolharu ko Guchchha",
+                "Still Life", "28500.00", 1, True, 4.8, 16,
+                "Januka Rizal", O, "24 × 30 in", True, 2024,
+                "Lush roses, lilies and tulips overflowing a glass vase — "
+                "Dutch-inspired floral abundance on a stone ledge.",
+            ),
+            (
+                "Bhansa Kotha Still Life",
+                "Still Life", "14200.00", 1, False, 4.5, 7,
+                "Sarita Gurung", O, "16 × 20 in", False, 2022,
+                "White enamel pot with red handle, onions and garlic on green "
+                "cloth — humble kitchen objects in gentle realism.",
+            ),
+
+            # ── Contemporary ────────────────────────────────────────────
+            (
+                "Bada Khutta ra Surya",
+                "Contemporary", "32000.00", 1, True, 4.8, 15,
+                "Alok Bhattarai", AC, "28 × 36 in", False, 2024,
+                "Bold modernist figure on a green mound — oversized foot, "
+                "cactus and yellow sun against a brilliant blue sky.",
+            ),
+            (
+                "Poolside Dui Roop",
+                "Contemporary", "45000.00", 1, True, 4.9, 21,
+                "Nirmal Bajracharya", AC, "36 × 48 in", True, 2023,
+                "Two figures at a turquoise pool — one standing in pink, "
+                "one swimming below rolling green hills in flat, vivid colour.",
+            ),
+            (
+                "Sochko Dhara",
+                "Contemporary", "24500.00", 1, False, 4.7, 12,
+                "Meena Shakya", AC, "24 × 30 in", False, 2024,
+                "Pop-art portrait in Ben-Day dots — anxious hands, red lips "
+                "and bold outlines on a deep blue comic-book ground.",
+            ),
+            (
+                "Rato Kursi ma Aram",
+                "Contemporary", "19800.00", 1, False, 4.6, 10,
+                "Puja Rana", AC, "22 × 28 in", False, 2023,
+                "Woman reclining in a bright red deck chair — blocky brushwork, "
+                "teal background and sunlit leisure in modern colour.",
+            ),
+            (
+                "Jwan ko Chhaya",
+                "Contemporary", "17500.00", 1, False, 4.7, 11,
+                "Bikash Tamang", O, "20 × 24 in", True, 2024,
+                "Contemporary portrait of a weary man in mustard shirt and vest — "
+                "downcast gaze and rough brushwork on a textured ground.",
             ),
 
             # ── Color Paintings ───────────────────────────────────────
             (
-                "Lali Gurans Phuleko",
-                "Color Paintings", "29000.00", 1, True, 4.9, 20,
-                "Maya Thapa", WC, "22 × 28 in", True, 2024,
-                "Vibrant rhododendron blooms cascading down a Himalayan hillside "
-                "— Nepal's national flower in full color glory.",
+                "Rangin Singhako Muhar",
+                "Color Paintings", "26500.00", 1, True, 4.9, 23,
+                "Manish Koirala", AC, "24 × 30 in", True, 2024,
+                "Majestic lion in profile — explosive blues, magentas, oranges "
+                "and gold in thick impasto against a glowing teal ground.",
             ),
             (
-                "Indra Jatra Utsav",
-                "Color Paintings", "36500.00", 1, True, 4.8, 17,
-                "Anil Karki", AC, "30 × 40 in", False, 2023,
-                "The living goddess Kumari chariot procession through Kathmandu "
-                "Durbar Square — luminous crowds and marigold garlands.",
+                "Mayur ra Rajkumari",
+                "Color Paintings", "38500.00", 1, True, 4.8, 19,
+                "Rekha Manandhar", O, "28 × 36 in", True, 2023,
+                "Royal woman in blue and gold with peacocks — traditional "
+                "jewellery, grapes and luminous feathers in a night garden.",
             ),
             (
-                "Seto Machindranath Rath",
-                "Color Paintings", "31000.00", 1, False, 4.6, 10,
-                "Sunita Rai", O, "24 × 32 in", True, 2023,
-                "The towering white chariot of Seto Machindranath rising above "
-                "Kathmandu streets — bold color and devotional energy.",
+                "Suryasta ra Rukh",
+                "Color Paintings", "12500.00", 1, False, 4.5, 8,
+                "Anita Sharma", AC, "18 × 22 in", False, 2022,
+                "Sunset over water — black tree silhouettes, bright sun "
+                "and horizontal bands of yellow, green and blue.",
             ),
             (
-                "Taal Ko Rang",
-                "Color Paintings", "24000.00", 1, False, 4.5, 8,
-                "Rajan Gurung", AC, "20 × 26 in", False, 2022,
-                "Abstract reflections in a mountain lake at sunset — "
-                "fiery orange and violet rippling across still water.",
+                "Rangin Barishma Paila",
+                "Color Paintings", "22000.00", 1, True, 4.8, 16,
+                "Prabhu KC", AC, "30 × 40 in", False, 2024,
+                "Figures with colourful umbrellas in the rain — vertical paint "
+                "drips and vivid reflections on a wet city street.",
             ),
             (
-                "Holi Ko Khushi",
-                "Color Paintings", "27800.00", 1, False, 4.7, 12,
-                "Maya Thapa", WC, "22 × 30 in", False, 2024,
-                "Joyful splashes of festival color — Holi celebration in "
-                "a Pokhara street, children laughing through clouds of gulal.",
-            ),
-            (
-                "Parijat Phul",
-                "Color Paintings", "19800.00", 1, False, 4.4, 7,
-                "Sunita Rai", O, "16 × 20 in", True, 2021,
-                "Night-blooming parijat flowers in soft candlelight — "
-                "a delicate oil study of Nepal's beloved coral jasmine.",
+                "Rang ko Anga",
+                "Color Paintings", "19500.00", 1, False, 4.7, 14,
+                "Kamala Thapa", AC, "20 × 24 in", False, 2024,
+                "Expressive colour portrait — warm and cool patches across "
+                "the face, rainbow hair and bold palette-knife strokes.",
             ),
 
             # ── Pencil Paintings ──────────────────────────────────────
             (
-                "Charcoal Gaaun Saanjh",
-                "Pencil Paintings", "13500.00", 1, True, 4.9, 22,
-                "Rajan Gurung", PC, "16 × 20 in", True, 2024,
-                "A Nepali village at dusk rendered in rich charcoal tones — "
-                "thatched roofs, winding lanes and fading evening light.",
+                "Parekhuko Jhalak",
+                "Pencil Paintings", "11800.00", 1, True, 4.7, 13,
+                "Sabina Rai", PC, "12 × 16 in", False, 2024,
+                "Delicate profile portrait in pencil — wispy hair across the face "
+                "and a quiet, downward gaze in soft graphite lines.",
             ),
             (
-                "Pencil Ko Pahaad",
-                "Pencil Paintings", "11200.00", 1, True, 4.8, 14,
-                "Anil Karki", PC, "14 × 18 in", False, 2023,
-                "A precise graphite study of the Annapurna range from Sarangkot "
-                "— every ridge and shadow captured with meticulous detail.",
+                "Bagh ko Drishti",
+                "Pencil Paintings", "19500.00", 1, True, 4.9, 21,
+                "Rajesh Maharjan", PC, "18 × 22 in", True, 2024,
+                "Hyper-real tiger head in graphite — piercing eyes, bold stripes "
+                "and fine whiskers emerging from a deep black ground.",
             ),
             (
-                "Graphite Portrait Budha",
-                "Pencil Paintings", "16500.00", 1, False, 4.7, 11,
-                "Sunita Rai", PC, "18 × 22 in", True, 2024,
-                "A deeply expressive graphite portrait of a Nepali elder — "
-                "weathered lines of a life well-lived in the hills.",
+                "Aankha ra Haat",
+                "Pencil Paintings", "16800.00", 1, False, 4.8, 15,
+                "Deepak Shrestha", PC, "16 × 20 in", False, 2023,
+                "Surreal drawing — many hands with pencils shaping a single "
+                "detailed eye at the centre of the composition.",
             ),
             (
-                "Raat Ko Bato — Charcoal",
-                "Pencil Paintings", "14000.00", 1, False, 4.6, 9,
-                "Rajan Gurung", PC, "16 × 20 in", False, 2022,
-                "A nocturnal charcoal scene — Kathmandu alley under a single "
-                "street lamp, misty and atmospheric.",
+                "Shanti Taal ra Ghar",
+                "Pencil Paintings", "14200.00", 1, False, 4.6, 10,
+                "Nirmala Ghimire", PC, "20 × 26 in", True, 2023,
+                "Lakeside village in pencil — villa, cypress trees, stone wall "
+                "and calm water with layered hills beyond.",
             ),
             (
-                "Aankhako Bhaav — Sketch",
-                "Pencil Paintings", "12800.00", 1, False, 4.5, 8,
-                "Sunita Rai", PC, "12 × 16 in", False, 2023,
-                "Intimate pencil sketch of expressive eyes — raw emotion "
-                "captured in minimal graphite strokes.",
-            ),
-            (
-                "Mustang Dharahara — Pencil",
-                "Pencil Paintings", "15500.00", 1, False, 4.6, 10,
-                "Anil Karki", PC, "18 × 24 in", True, 2023,
-                "The ancient walled city of Mustang Lo Manthang in tonal "
-                "pencil — crumbling ochre walls and fluttering prayer flags.",
-            ),
-            (
-                "Aakash Pencil Sketch",
-                "Pencil Paintings", "10500.00", 1, False, 4.4, 6,
-                "Maya Thapa", PC, "11 × 14 in", False, 2021,
-                "A delicate sky study in pencil — layered cloud formations "
-                "above the Kathmandu valley at first light.",
-            ),
-            (
-                "Ghaam Pani — Charcoal",
-                "Pencil Paintings", "17000.00", 1, True, 4.8, 16,
-                "Rajan Gurung", PC, "20 × 26 in", True, 2024,
-                "Monsoon rain and afternoon sun in dramatic charcoal contrast — "
-                "the bittersweet play of Nepali weather on a mountain road.",
+                "Hatti ko Muhar",
+                "Pencil Paintings", "17500.00", 1, True, 4.8, 17,
+                "Keshav Fuyal", PC, "18 × 24 in", True, 2024,
+                "Elephant head in profile — wrinkled skin, curved trunk and tusk "
+                "rendered in meticulous graphite shading.",
             ),
         ]
 
@@ -421,7 +470,15 @@ class Command(BaseCommand):
             self.stdout.write(f"  {status} {product.name}")
 
         removed, _ = Product.objects.filter(
-            slug__in=(*RETIRED_LANDSCAPE_SLUGS, *RETIRED_PORTRAIT_SLUGS)
+            slug__in=(
+                *RETIRED_LANDSCAPE_SLUGS,
+                *RETIRED_PORTRAIT_SLUGS,
+                *RETIRED_ABSTRACT_SLUGS,
+                *RETIRED_STILL_LIFE_SLUGS,
+                *RETIRED_CONTEMPORARY_SLUGS,
+                *RETIRED_COLOR_PAINTINGS_SLUGS,
+                *RETIRED_PENCIL_PAINTINGS_SLUGS,
+            )
         ).delete()
         if removed:
             self.stdout.write(self.style.WARNING(f"  - removed {removed} retired listing(s)"))
