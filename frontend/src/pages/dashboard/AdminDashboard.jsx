@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectAuth } from '../../redux/auth/authSlice'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
-import {
-  DEFAULT_ADMIN_CREDENTIALS,
-  fetchAdminDashboard,
-} from '../../services/adminService'
+import { fetchAdminDashboard } from '../../services/adminService'
 import { ROUTES, formatPrice } from '../../utils/constants'
 
 const DJANGO_ADMIN_URL = 'http://127.0.0.1:8000/admin/'
@@ -80,33 +77,6 @@ function AdminDashboard() {
             Django admin
           </a>
         </div>
-      </div>
-
-      <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-900">
-          Admin login (ready-made)
-        </h2>
-        <p className="mt-2 text-sm text-amber-950">
-          Use these credentials on the{' '}
-          <Link to={ROUTES.LOGIN} className="font-medium underline hover:text-amber-800">
-            login page
-          </Link>
-          :
-        </p>
-        <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-          <div>
-            <dt className="font-medium text-amber-900">Email</dt>
-            <dd className="font-mono text-gray-900">{DEFAULT_ADMIN_CREDENTIALS.email}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-amber-900">Password</dt>
-            <dd className="font-mono text-gray-900">{DEFAULT_ADMIN_CREDENTIALS.password}</dd>
-          </div>
-        </dl>
-        <p className="mt-3 text-xs text-amber-800">
-          Create or reset this account with{' '}
-          <code className="rounded bg-white/80 px-1">python manage.py seed_admin</code>
-        </p>
       </div>
 
       {loading && (
