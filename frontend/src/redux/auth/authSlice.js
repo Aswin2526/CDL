@@ -199,5 +199,7 @@ const authSlice = createSlice({
 export const { clearError } = authSlice.actions
 export const selectAuth = (state) => state.auth
 export const selectIsAuthenticated = (state) => Boolean(state.auth.accessToken)
+export const selectIsAdmin = (state) => state.auth.user?.role === 'admin'
+export const selectIsCustomer = (state) => state.auth.user?.role === 'customer'
 export { getDashboardRoute }
 export default authSlice.reducer

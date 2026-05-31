@@ -14,12 +14,13 @@ import {
   resetFilters,
 } from '../../redux/product/productSlice'
 import { loadWishlist } from '../../redux/wishlist/wishlistSlice'
-import { selectIsAuthenticated } from '../../redux/auth/authSlice'
+import { selectIsAdmin, selectIsAuthenticated } from '../../redux/auth/authSlice'
 
 function ShopPage() {
   const dispatch = useDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isAdmin = useSelector(selectIsAdmin)
   const { list, listCount, totalAvailable, listLoading, listError, categories, filters } =
     useSelector((state) => state.products)
 
@@ -52,8 +53,8 @@ function ShopPage() {
   useEffect(() => {
     dispatch(loadCategories())
     dispatch(loadGalleryTotalCount())
-    if (isAuthenticated) dispatch(loadWishlist())
-  }, [dispatch, isAuthenticated])
+    if (isAuthenticated && !isAdmin) dispatch(loadWishlist())
+  }, [dispatch, isAuthenticated, isAdmin])
 
   useEffect(() => {
     dispatch(loadProducts(buildParams()))

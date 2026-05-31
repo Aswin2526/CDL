@@ -5,26 +5,31 @@ import { Provider, useDispatch, useSelector } from 'react-redux'
 import './index.css'
 import { router } from './routes/router.jsx'
 import { store } from './redux/store/index.js'
-import { initializeAuth, selectIsAuthenticated } from './redux/auth/authSlice'
+import {
+  initializeAuth,
+  selectIsAuthenticated,
+  selectIsCustomer,
+} from './redux/auth/authSlice'
 import { loadCart, resetCart } from './redux/cart/cartSlice'
 import { loadWishlist, resetWishlist } from './redux/wishlist/wishlistSlice'
 function AuthBootstrap({ children }) {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isCustomer = useSelector(selectIsCustomer)
 
   useEffect(() => {
     dispatch(initializeAuth())
   }, [dispatch])
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isCustomer) {
       dispatch(loadCart())
       dispatch(loadWishlist())
     } else {
       dispatch(resetCart())
       dispatch(resetWishlist())
     }
-  }, [dispatch, isAuthenticated])
+  }, [dispatch, isAuthenticated, isCustomer])
 
   return children
 }

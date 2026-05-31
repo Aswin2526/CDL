@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { loadProductDetail } from '../../redux/product/productSlice'
 import { toggleWishlistItem, selectIsInWishlist } from '../../redux/wishlist/wishlistSlice'
 import { addCartItem, selectIsInCart } from '../../redux/cart/cartSlice'
-import { selectIsAuthenticated } from '../../redux/auth/authSlice'
+import { selectIsAdmin, selectIsAuthenticated } from '../../redux/auth/authSlice'
 import { addProductReview, fetchProductReviews } from '../../services/productService'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import EmptyState from '../../components/common/EmptyState'
@@ -22,6 +22,8 @@ function ProductDetailPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isAdmin = useSelector(selectIsAdmin)
+  const canShop = isAuthenticated && !isAdmin
   const { detail, detailLoading, detailError } = useSelector((state) => state.products)
   const inWishlist = useSelector(selectIsInWishlist(detail?.id))
   const inCart = useSelector(selectIsInCart(detail?.id))
@@ -182,63 +184,84 @@ function ProductDetailPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <button
-              type="button"
-              disabled={!detail.in_stock || cartAdding}
-              onClick={() => {
-                if (!isAuthenticated) {
-                  window.location.href = ROUTES.LOGIN
-                  return
-                }
-                if (inCart) {
-                  navigate(ROUTES.CART)
-                  return
-                }
-                dispatch(addCartItem(detail.id))
-              }}
-              className={`flex-1 rounded-lg py-3 font-semibold sm:flex-none sm:px-8 ${
-                !detail.in_stock
-                  ? 'cursor-not-allowed bg-stone-200 text-stone-500'
-                  : inCart
-                    ? 'border border-amber-600 bg-amber-50 text-amber-900 hover:bg-amber-100'
-                    : 'bg-amber-600 text-white hover:bg-amber-700'
-              }`}
-            >
-              {!detail.in_stock
-                ? 'Sold out'
-                : cartAdding
-                  ? 'Adding…'
-                  : inCart
-                    ? 'In cart — view cart'
-                    : 'Add to cart'}
-            </button>
-            {inCart && (
-              <Link
-                to={ROUTES.CART}
-                className="rounded-lg border border-amber-600 px-6 py-3 font-medium text-amber-800 hover:bg-amber-50"
-              >
-                View cart
-              </Link>
+            {canShop ? (
+              <>
+                <button
+                  type="button"
+                  disabled={!detail.in_stock || cartAdding}
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      window.location.href = ROUTES.LOGIN
+                      return
+                    }
+                    if (inCart) {
+                      navigate(ROUTES.CART)
+                      return
+                    }
+                    dispatch(addCartItem(detail.id))
+                  }}
+                  className={`flex-1 rounded-lg py-3 font-semibold sm:flex-none sm:px-8 ${
+                    !detail.in_stock
+                      ? 'cursor-not-allowed bg-stone-200 text-stone-500'
+                      : inCart
+                        ? 'border border-amber-600 bg-amber-50 text-amber-900 hover:bg-amber-100'
+                        : 'bg-amber-600 text-white hover:bg-amber-700'
+                  }`}
+                >
+                  {!detail.in_stock
+                    ? 'Sold out'
+                    : cartAdding
+                      ? 'Adding…'
+                      : inCart
+                        ? 'In cart — view cart'
+                        : 'Add to cart'}
+                </button>
+                {inCart && (
+                  <Link
+                    to={ROUTES.CART}
+                    className="rounded-lg border border-amber-600 px-6 py-3 font-medium text-amber-800 hover:bg-amber-50"
+                  >
+                    View cart
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      window.location.href = ROUTES.LOGIN
+                      return
+                    }
+                    dispatch(toggleWishlistItem(detail.id))
+                  }}
+                  className={`rounded-lg border px-6 py-3 font-medium ${
+                    inWishlist
+                      ? 'border-red-300 bg-red-50 text-red-700'
+                      : 'border-stone-300 text-gray-700 hover:border-amber-500'
+                  }`}
+                >
+                  {inWishlist ? 'Saved to wishlist' : 'Save to wishlist'}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={ROUTES.SHOP}
+                  className="rounded-lg bg-amber-600 px-6 py-3 font-semibold text-white hover:bg-amber-700"
+                >
+                  Back to gallery
+                </Link>
+                {isAdmin && (
+                  <Link
+                    to={ROUTES.ADMIN_DASHBOARD}
+                    className="rounded-lg border border-stone-300 px-6 py-3 font-medium text-gray-700 hover:border-amber-500"
+                  >
+                    Admin dashboard
+                  </Link>
+                )}
+              </>
             )}
-            <button
-              type="button"
-              onClick={() => {
-                if (!isAuthenticated) {
-                  window.location.href = ROUTES.LOGIN
-                  return
-                }
-                dispatch(toggleWishlistItem(detail.id))
-              }}
-              className={`rounded-lg border px-6 py-3 font-medium ${
-                inWishlist
-                  ? 'border-red-300 bg-red-50 text-red-700'
-                  : 'border-stone-300 text-gray-700 hover:border-amber-500'
-              }`}
-            >
-              {inWishlist ? 'Saved to wishlist' : 'Save to wishlist'}
-            </button>
           </div>
-          {cartError && (
+          {cartError && canShop && (
             <p className="mt-2 text-sm text-red-600">{cartError}</p>
           )}
 
@@ -260,7 +283,7 @@ function ProductDetailPage() {
           Collector reviews
         </h2>
 
-        {isAuthenticated && (
+        {canShop && (
           <form
             onSubmit={handleReview}
             className="mt-6 max-w-lg rounded-xl border border-stone-200 bg-white p-4"

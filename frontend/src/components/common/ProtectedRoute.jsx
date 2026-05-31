@@ -1,7 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { ROUTES } from '../../utils/constants'
-import { selectAuth, selectIsAuthenticated } from '../../redux/auth/authSlice'
+import {
+  getDashboardRoute,
+  selectAuth,
+  selectIsAuthenticated,
+} from '../../redux/auth/authSlice'
 
 function ProtectedRoute({ allowedRoles }) {
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -12,7 +16,9 @@ function ProtectedRoute({ allowedRoles }) {
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    return <Navigate to={ROUTES.HOME} replace />
+    const fallback =
+      user?.role === 'admin' ? ROUTES.ADMIN_DASHBOARD : getDashboardRoute(user?.role)
+    return <Navigate to={fallback} replace />
   }
 
   return <Outlet />

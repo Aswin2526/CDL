@@ -38,19 +38,16 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        element: <ProtectedRoute />,
-        children: [
-          { path: 'wishlist', element: <WishlistPage /> },
-          { path: 'cart', element: <CartPage /> },
-        ],
-      },
-      {
         element: <ProtectedRoute allowedRoles={['admin']} />,
         children: [{ path: 'admin/dashboard', element: <AdminDashboard /> }],
       },
       {
         element: <ProtectedRoute allowedRoles={['customer']} />,
-        children: [{ path: 'customer/home', element: <CustomerHome /> }],
+        children: [
+          { path: 'wishlist', element: <WishlistPage /> },
+          { path: 'cart', element: <CartPage /> },
+          { path: 'customer/home', element: <CustomerHome /> },
+        ],
       },
       { path: '*', element: <NotFoundPage /> },
     ],

@@ -6,20 +6,22 @@ import ProductGrid from '../components/products/ProductGrid'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { loadHomeData } from '../redux/product/productSlice'
 import { loadWishlist } from '../redux/wishlist/wishlistSlice'
-import { selectIsAuthenticated } from '../redux/auth/authSlice'
+import { selectAuth, selectIsAdmin, selectIsAuthenticated } from '../redux/auth/authSlice'
 import { APP_NAME, APP_TAGLINE, ROUTES, CATEGORY_ICONS } from '../utils/constants'
 
 function HomePage() {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isAdmin = useSelector(selectIsAdmin)
+  const { user } = useSelector(selectAuth)
   const { latest, topRated, categories, homeLoading } = useSelector(
     (state) => state.products,
   )
 
   useEffect(() => {
     dispatch(loadHomeData())
-    if (isAuthenticated) dispatch(loadWishlist())
-  }, [dispatch, isAuthenticated])
+    if (isAuthenticated && !isAdmin) dispatch(loadWishlist())
+  }, [dispatch, isAuthenticated, isAdmin])
 
   return (
     <div>
@@ -37,29 +39,57 @@ function HomePage() {
               color works. One piece per artwork; Nepali artists; prices in Rs.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to={`${ROUTES.SHOP}?category=original-paintings`}
-                className="rounded-lg bg-amber-500 px-6 py-3 font-semibold text-stone-900 shadow hover:bg-amber-400"
-              >
-                Shop originals
-              </Link>
-              <Link
-                to={ROUTES.SHOP}
-                className="rounded-lg border-2 border-amber-200/60 px-6 py-3 font-semibold text-white hover:bg-white/10"
-              >
-                Browse gallery
-              </Link>
-              <Link
-                to={ROUTES.REGISTER}
-                className="rounded-lg border-2 border-amber-200/60 px-6 py-3 font-semibold text-white hover:bg-white/10"
-              >
-                Join as collector
-              </Link>
+              {isAdmin ? (
+                <>
+                  <Link
+                    to={ROUTES.ADMIN_DASHBOARD}
+                    className="rounded-lg bg-amber-500 px-6 py-3 font-semibold text-stone-900 shadow hover:bg-amber-400"
+                  >
+                    Admin dashboard
+                  </Link>
+                  <Link
+                    to={ROUTES.SHOP}
+                    className="rounded-lg border-2 border-amber-200/60 px-6 py-3 font-semibold text-white hover:bg-white/10"
+                  >
+                    Browse gallery
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to={`${ROUTES.SHOP}?category=original-paintings`}
+                    className="rounded-lg bg-amber-500 px-6 py-3 font-semibold text-stone-900 shadow hover:bg-amber-400"
+                  >
+                    Shop originals
+                  </Link>
+                  <Link
+                    to={ROUTES.SHOP}
+                    className="rounded-lg border-2 border-amber-200/60 px-6 py-3 font-semibold text-white hover:bg-white/10"
+                  >
+                    Browse gallery
+                  </Link>
+                  {!isAuthenticated && (
+                    <Link
+                      to={ROUTES.REGISTER}
+                      className="rounded-lg border-2 border-amber-200/60 px-6 py-3 font-semibold text-white hover:bg-white/10"
+                    >
+                      Join as collector
+                    </Link>
+                  )}
+                </>
+              )}
             </div>
           </div>
-          <div className="mt-10 max-w-xl">
-            <SearchBar className="shadow-lg" />
-          </div>
+          {!isAdmin && (
+            <div className="mt-10 max-w-xl">
+              <SearchBar className="shadow-lg" />
+            </div>
+          )}
+          {isAdmin && user && (
+            <p className="mt-6 text-sm text-amber-200/90">
+              Signed in as {user.full_name} — manage the store from the dashboard.
+            </p>
+          )}
         </div>
       </section>
 
@@ -124,16 +154,41 @@ function HomePage() {
 
       <section className="border-t border-stone-200 bg-white py-12">
         <div className="mx-auto max-w-7xl px-4 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Start your collection today</h2>
-          <p className="mt-2 text-gray-600">
-            Curated original paintings, secure checkout, and insured delivery.
-          </p>
-          <Link
-            to={ROUTES.SHOP}
-            className="mt-6 inline-block rounded-lg bg-amber-700 px-8 py-3 font-semibold text-white hover:bg-amber-800"
-          >
-            Explore the gallery
-          </Link>
+          {isAdmin ? (
+            <>
+              <h2 className="text-2xl font-bold text-gray-900">Store overview</h2>
+              <p className="mt-2 text-gray-600">
+                Browse the public gallery or open the admin dashboard for stats and catalog tools.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link
+                  to={ROUTES.ADMIN_DASHBOARD}
+                  className="inline-block rounded-lg bg-amber-700 px-8 py-3 font-semibold text-white hover:bg-amber-800"
+                >
+                  Admin dashboard
+                </Link>
+                <Link
+                  to={ROUTES.SHOP}
+                  className="inline-block rounded-lg border border-amber-700 px-8 py-3 font-semibold text-amber-800 hover:bg-amber-50"
+                >
+                  Explore the gallery
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold text-gray-900">Start your collection today</h2>
+              <p className="mt-2 text-gray-600">
+                Curated original paintings, secure checkout, and insured delivery.
+              </p>
+              <Link
+                to={ROUTES.SHOP}
+                className="mt-6 inline-block rounded-lg bg-amber-700 px-8 py-3 font-semibold text-white hover:bg-amber-800"
+              >
+                Explore the gallery
+              </Link>
+            </>
+          )}
         </div>
       </section>
     </div>
