@@ -37,8 +37,18 @@ function ProductCard({ product }) {
           alt={product.name}
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
-        {product.is_featured && (
+        {product.category_slug === 'original-drawings' && (
+          <span className="absolute left-2 top-2 rounded bg-stone-900 px-2 py-0.5 text-xs font-semibold text-amber-100">
+            Original
+          </span>
+        )}
+        {product.is_featured && product.category_slug !== 'original-drawings' && (
           <span className="absolute left-2 top-2 rounded bg-amber-600 px-2 py-0.5 text-xs font-semibold text-white">
+            Featured
+          </span>
+        )}
+        {product.is_featured && product.category_slug === 'original-drawings' && (
+          <span className="absolute left-2 top-10 rounded bg-amber-600 px-2 py-0.5 text-xs font-semibold text-white">
             Featured
           </span>
         )}

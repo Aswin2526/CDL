@@ -1,5 +1,5 @@
 export const APP_NAME = 'ChitraBazar'
-export const APP_TAGLINE = 'Online painting gallery & store'
+export const APP_TAGLINE = 'Original hand-drawn paintings for sale'
 
 export const ROUTES = {
   HOME: '/',
@@ -44,6 +44,7 @@ export const CATEGORY_ICONS = {
   contemporary: '✨',
   'color-paintings': '🖌️',
   'pencil-paintings': '✏️',
+  'original-drawings': '🖼️',
 }
 
 export const PLACEHOLDER_IMAGE =

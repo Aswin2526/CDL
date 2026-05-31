@@ -30,17 +30,22 @@ function HomePage() {
               {APP_TAGLINE}
             </p>
             <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">
-              Discover original paintings
+              Original drawn paintings for sale
             </h1>
             <p className="mt-4 text-lg text-stone-200">
-              {APP_NAME} is your single destination for original paintings.
-              Browse landscapes, portraits, abstracts, and contemporary works — each
-              piece sold with authenticity guaranteed.
+              {APP_NAME} sells real hand-drawn originals — pencil, charcoal, ink and
+              color works. One piece per artwork; Nepali artists; prices in Rs.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to={ROUTES.SHOP}
+                to={`${ROUTES.SHOP}?category=original-drawings`}
                 className="rounded-lg bg-amber-500 px-6 py-3 font-semibold text-stone-900 shadow hover:bg-amber-400"
+              >
+                Shop originals
+              </Link>
+              <Link
+                to={ROUTES.SHOP}
+                className="rounded-lg border-2 border-amber-200/60 px-6 py-3 font-semibold text-white hover:bg-white/10"
               >
                 Browse gallery
               </Link>

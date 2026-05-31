@@ -34,7 +34,7 @@ class Command(BaseCommand):
         # ── Store ────────────────────────────────────────────────────
         store = StoreSettings.load()
         store.name = "ChitraBazar"
-        store.tagline = "Online painting gallery & store"
+        store.tagline = "Original hand-drawn paintings for sale"
         store.address = "Lakeside, Pokhara, Nepal"
         store.phone = "9801111111"
         store.email = "hello@chitrabazar.com"
@@ -55,6 +55,11 @@ class Command(BaseCommand):
             ("Contemporary",    "Bold current-era original works"),
             ("Color Paintings", "Original full-color oil, acrylic and watercolor works"),
             ("Pencil Paintings","Graphite, charcoal and pencil drawings"),
+            (
+                "Original Drawings",
+                "One-of-a-kind hand-drawn originals — pencil, charcoal and ink. "
+                "Each piece is a single original artwork ready to ship.",
+            ),
         ]
         cats = {}
         for name, desc in cats_data:
@@ -112,34 +117,90 @@ class Command(BaseCommand):
                 "reflecting the depth and dignity of an elder Nepali face.",
             ),
 
-            # ── User reference portraits & scenes (local images) ───────
+            # ── Original hand-drawn paintings for sale (local reference art) ──
             (
                 "Nilo Nayan — Phoolbhitra",
-                "Portrait", "36000.00", 1, True, 4.9, 5,
-                "Studio Artist", O, "24 × 30 in", True, 2024,
-                "Hyper‑realistic blue eyes emerging from a ring of white flowers — "
-                "inspired directly by the buyer’s custom reference painting.",
+                "Original Drawings", "36000.00", 1, True, 4.9, 5,
+                "Sunita Rai", PC, "24 × 30 in", True, 2024,
+                "ORIGINAL FOR SALE — Hand-drawn color portrait with blue eyes and "
+                "white blossoms. Single piece on archival paper; certificate included.",
             ),
             (
                 "Gaun Ko Ghar Bagaicha",
-                "Landscape", "28000.00", 1, True, 4.8, 4,
-                "Studio Artist", AC, "24 × 30 in", True, 2024,
-                "Peaceful countryside house with bright green fields and wild "
-                "daisies — perfect for living‑room wall decor.",
+                "Original Drawings", "28000.00", 1, True, 4.8, 4,
+                "Maya Thapa", AC, "24 × 30 in", True, 2024,
+                "ORIGINAL FOR SALE — Acrylic landscape of a countryside home and "
+                "meadow. Painted by hand; only one copy exists.",
             ),
             (
                 "Charcoal Gaun Ko Bato",
-                "Pencil Paintings", "15000.00", 1, True, 4.7, 3,
-                "Studio Artist", PC, "18 × 24 in", False, 2024,
-                "Moody black‑and‑white charcoal landscape of a distant village "
-                "road, echoing foggy winter evenings in the hills.",
+                "Original Drawings", "15000.00", 1, True, 4.7, 3,
+                "Rajan Gurung", PC, "18 × 24 in", False, 2024,
+                "ORIGINAL FOR SALE — Charcoal drawing of a misty village path. "
+                "Signed original; ships rolled or flat-packed.",
             ),
             (
                 "Kala Safed Fashion Portrait",
-                "Portrait", "32000.00", 1, True, 4.8, 3,
-                "Studio Artist", MX, "20 × 24 in", False, 2024,
-                "Minimal black‑and‑white fashion illustration with bold red lips "
-                "and sleek gloves — for modern apartment spaces.",
+                "Original Drawings", "32000.00", 1, True, 4.8, 3,
+                "Sunita Rai", MX, "20 × 24 in", False, 2024,
+                "ORIGINAL FOR SALE — Ink and wash fashion portrait with bold pink "
+                "lips. Hand-painted original, not a print.",
+            ),
+            (
+                "Hathle Baneko Gurans",
+                "Original Drawings", "14500.00", 1, True, 4.8, 6,
+                "Anil Karki", PC, "14 × 18 in", False, 2024,
+                "ORIGINAL FOR SALE — Pencil study of rhododendron branches drawn "
+                "from life in Ghorepani. One piece only.",
+            ),
+            (
+                "Kathmandu Durbar Charcoal",
+                "Original Drawings", "18500.00", 1, False, 4.7, 4,
+                "Rajan Gurung", PC, "16 × 20 in", True, 2023,
+                "ORIGINAL FOR SALE — Charcoal sketch of temple woodwork and "
+                "courtyard shadows at Kathmandu Durbar Square.",
+            ),
+            (
+                "Pokhara Lake Graphite Original",
+                "Original Drawings", "16800.00", 1, False, 4.6, 5,
+                "Maya Thapa", PC, "18 × 24 in", False, 2024,
+                "ORIGINAL FOR SALE — Graphite lakeside drawing with Annapurna "
+                "reflections. Hand-finished tonal work.",
+            ),
+            (
+                "Baal Sain Charcoal Portrait",
+                "Original Drawings", "22000.00", 1, True, 4.9, 7,
+                "Sunita Rai", PC, "18 × 22 in", True, 2024,
+                "ORIGINAL FOR SALE — Charcoal child portrait with soft highlights. "
+                "Drawn from a live sitting in Pokhara.",
+            ),
+            (
+                "Dhaka Topi Wala Sketch",
+                "Original Drawings", "12500.00", 1, False, 4.5, 3,
+                "Anil Karki", PC, "12 × 16 in", False, 2023,
+                "ORIGINAL FOR SALE — Quick pencil sketch of an elder in traditional "
+                "dhaka topi. Authentic hill-culture study.",
+            ),
+            (
+                "Prayer Flag Ridge Drawing",
+                "Original Drawings", "19500.00", 1, False, 4.7, 4,
+                "Rajan Gurung", PC, "20 × 26 in", True, 2023,
+                "ORIGINAL FOR SALE — Pencil and charcoal ridge line with fluttering "
+                "prayer flags. Original Himalayan scene.",
+            ),
+            (
+                "Sadak Ko Kukur — Pencil",
+                "Original Drawings", "9800.00", 1, False, 4.4, 2,
+                "Maya Thapa", PC, "11 × 14 in", False, 2022,
+                "ORIGINAL FOR SALE — Street dog resting on a Kathmandu lane, drawn "
+                "in graphite. Affordable original art.",
+            ),
+            (
+                "Monsoon Khola Charcoal",
+                "Original Drawings", "17200.00", 1, False, 4.6, 5,
+                "Anil Karki", PC, "18 × 24 in", False, 2024,
+                "ORIGINAL FOR SALE — Charcoal stream scene after monsoon rain. "
+                "Textured paper, signed by artist.",
             ),
 
             # ── Landscape ─────────────────────────────────────────────

@@ -52,6 +52,14 @@ SLUG_TO_PICSUM_ID: dict[str, int] = {
     "mustang-dharahara-pencil": 250,
     "aakash-pencil-sketch": 305,
     "ghaam-pani-charcoal": 366,
+    "hathle-baneko-gurans": 433,
+    "kathmandu-durbar-charcoal": 439,
+    "pokhara-lake-graphite-original": 442,
+    "baal-sain-charcoal-portrait": 449,
+    "dhaka-topi-wala-sketch": 452,
+    "prayer-flag-ridge-drawing": 454,
+    "sadak-ko-kukur-pencil": 456,
+    "monsoon-khola-charcoal": 457,
 }
 
 
