@@ -8,6 +8,7 @@ import {
   selectAuth,
   selectIsAuthenticated,
 } from '../../redux/auth/authSlice'
+import { DEFAULT_ADMIN_CREDENTIALS } from '../../services/adminService'
 import { APP_NAME, ROUTES } from '../../utils/constants'
 
 function LoginPage() {
@@ -106,6 +107,16 @@ function LoginPage() {
             Register
           </Link>
         </p>
+
+        <div className="mt-6 rounded-lg border border-stone-200 bg-stone-50 px-3 py-3 text-xs text-gray-600">
+          <p className="font-medium text-gray-800">Admin access</p>
+          <p className="mt-1">
+            Email: <span className="font-mono">{DEFAULT_ADMIN_CREDENTIALS.email}</span>
+          </p>
+          <p>
+            Password: <span className="font-mono">{DEFAULT_ADMIN_CREDENTIALS.password}</span>
+          </p>
+        </div>
       </div>
     </div>
   )

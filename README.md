@@ -65,7 +65,19 @@ python manage.py seed_catalog --clear
 
 Creates landscape, portrait, abstract, still life, and contemporary categories with sample original paintings.
 
-**Demo admin:** create via `python manage.py createsuperuser` (role: admin in Django admin)
+**Default admin account:**
+
+```powershell
+python manage.py seed_admin
+```
+
+| Field    | Value                    |
+| -------- | ------------------------ |
+| Email    | `admin@chitrabazar.com`  |
+| Password | `ChitraAdmin@2024`       |
+
+Log in at the site **Login** page → you are redirected to **Admin Dashboard**.  
+Full catalog control: `http://127.0.0.1:8000/admin/` (Django admin).
 
 ### 6. Start development server
 
